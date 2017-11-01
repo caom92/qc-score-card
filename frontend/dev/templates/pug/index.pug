@@ -1,0 +1,47 @@
+//- Este archivo representa la estructura base de la pagina HTML del sitio
+//- Incluimos nuestra libreria de mixins
+include globals.pug
+
+//- Declaramos que la pagina es HTML5
+doctype html
+
+//- Declaramos que la pagina esta en español
+html(lang='es')
+  head
+    //- Declaramos que la pagina esta codificada con caracteres UTF-8
+    meta(charset='UTF-8')
+
+    //- Esta linea permite que la pagina sea responsiva
+    meta(
+      name='viewport'
+      content='width=device-width, initial-scale=1.0'
+    )
+
+    //- Datos de la empresa que creo este software
+    meta(
+      name='author'
+      content='Koi Software'
+    )
+    meta(
+      name='author_webpage'
+      content='https://www.facebook.com/KoiSoftware'
+    )
+
+    //- Importamos las hojas de estilo que necesita el projecto
+    include stylesheets.pug
+    
+    //- Declaramos el favicon del sitio
+    include favicon.pug
+
+    //- Requerido por Angular
+    base(href='./')
+
+    //- El titulo de la pagina del sitio
+    title='TITULO DEL PROYECTO'
+
+  body
+    //- Contenido principal del sitio
+    app-root
+
+    //- Importamos todos los scripts del sitio
+    include scripts.pug

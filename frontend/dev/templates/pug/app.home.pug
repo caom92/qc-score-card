@@ -1,0 +1,22 @@
+include globals.pug
+
+//- Barra de navegacion en la parte superior de la pagina
+-
+  var navBarConfig = {
+    sideNavButton: {
+      id: "'sidenav-activation-btn'",
+      icon: 'mdi mdi-menu white-text'
+    }
+  };
++navBar(navBarConfig)
+
+//- Menu de navegacion lateral
++sideNav("'sidenav'", "'sidenav-activation-btn'")(
+  '[fixed]'="'true'"
+)
+
+//- Area principal de la pagina
+div.container(
+  '[ngClass]'="{ 'with-sidenav': true }"
+)
+  ui-view

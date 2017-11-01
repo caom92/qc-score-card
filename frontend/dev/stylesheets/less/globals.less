@@ -1,0 +1,97 @@
+// Este archivo contiene todas las funciones y variables globales que son 
+// necesarias para crear la hoja de estilo para las vistas del proyecto
+@tabletScreenWidth: 600px;
+@desktopScreenWidth: 992px;
+@largeDesktopScreenWidth: 1200px;
+@pageBgColor: rgb(245, 245, 245);
+@sideNavWidth: 300px;
+
+// Cambia el color de fondo de la pagina
+body {
+  background-color: @pageBgColor;
+}
+
+// Esta clase permitira a cualquier boton, flotar permanentemente en la esquina 
+// inferior derecha de la pantalla
+.floating-btn {
+  position: fixed !important;
+  bottom: 10px;
+  right: 10px;
+}
+
+// Permite desplegar correctamente un documento desplegado con ViewerJS dentro 
+// de un contenedor tipo columna de materialize
+.viewerjs-container {
+  height: ~"calc(100vh - 225px)";
+}
+
+// Las siguientes reglas se aplicaran cuando el usuario este en una pantalla de 
+// 993px de ancho en adelante
+@media screen and (min-width: (@desktopScreenWidth + 1)) {
+  // Estas reglas sobreescriben el estilo de la tabla responsiva para que los 
+  // datos se muestren siempre en forma horizontal, incluso cuando la pantalla 
+  // es grande
+  table.responsive-table.permanently-horizontal {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    display: block;
+    position: relative;
+    .responsive-table-col {
+      margin: 0;
+      vertical-align: top;
+    }
+    thead {
+      border: 0;
+      border-right: 1px solid #d0d0d0;
+      display: block;
+      float: left;
+    }
+    th {
+      display: block;
+      text-align: right;
+      .responsive-table-col
+    }
+    tbody {
+      display: block;
+      width: auto;
+      position: relative;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    tr {
+      display: inline-block;
+      vertical-align: top;
+      padding: 0 10px;
+    }
+    td {
+      display: block;
+      min-height: 1.25em;
+      text-align: left;
+      .responsive-table-col
+    }
+  }
+} // @media screen and (min-width: (@desktopScreenWidth + 1))
+
+// Estas reglas permiten tener una tabla responsiva que cuando tiene muchas 
+// columnas en una pantalla grande, permite arrastrarse de forma horizontal y 
+// vertical; se decidio que se debe permitir arrastrar de forma vertical 
+// tambien debido a que en caso de que sean muchos renglones, el usuario no 
+// tiene que navegar hasta el fondo de la pantalla para poder arrastrar las 
+// columnas de la tabla
+.scrollable-table-container {
+  overflow: scroll;
+  height: ~"calc(100vh - 300px)";
+  @media screen and (min-width: (@desktopScreenWidth + 1)) {
+    table.responsive-table.scrollable-table {
+      th.table-col-fixed, td.table-col-fixed {
+        min-width: 140px;
+      }
+    }
+  }
+  table.scrollable-table:not(.responsive-table) {
+    th.table-col-fixed, td.table-col-fixed {
+      min-width: 140px;
+    }
+  }
+}

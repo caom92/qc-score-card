@@ -1,0 +1,28 @@
+//- Este archivo contiene las sentencias que permitiran incluir todos los 
+//- archivos JavaScript que seran necesarios para la ejecucion del sitio
+//- Incluimos nuestra libreria de mixins
+include globals.pug
+
+//- Importa un archivo JavaScript
+//- [in]  path (string): el URL desde donde se importara el archivo
+mixin importScript(path)
+  script(
+    type='text/javascript'
+    src=path
+  )
+
+//- Importa un archivo JavaScript desde la carpeta externa del proyecto, donde 
+//- se encuentran todas las librerias externas de las cuales depende este sitio
+//- [in]  path (string): el URL desde donde se importara el archivo
+mixin importModuleScript(path)
+  +importScript(dir.modules + path)
+
+//- Importa un archivo JavaScript desde la carpeta de behaviors del proyecto, 
+//- donde se encuentran todos los archivos que definen el comportamiento de cada
+//- pagina del sitio
+//- [in]  file (string): el nombre del archivo que va a ser importado
+mixin importProjectScript(file)
+  +importScript(dir.controllers + file)
+
+//- Aqui importamos todos nuestros archivos JavaScript
+//- ADVERTENCIA: el orden es importante

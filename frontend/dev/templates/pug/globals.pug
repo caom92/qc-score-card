@@ -1,0 +1,327 @@
+//- Este archivo contiene un conjunto de utiles mixins que se pueden utilizar en
+//- todas las plantillas Pug del proyecto para facilitar la programacion
+//- Declaramos una variable que contenga los URLs de las carpetas de interes del
+//- proyecto
+- 
+  var dir = { root: '../' };
+  dir.modules = dir.root + 'node_modules/';
+  dir.templates = dir.root + 'templates/';
+  dir.components = dir.root + 'components/';
+  dir.assets = dir.root + 'assets/';
+  dir.stylesheets = dir.root + 'stylesheets/';
+
+//- Crea un enlace
+//- [in]  [destination] (string): la URL a donde navegara el usuario al hacer 
+//-       clic sobre el enlace
+mixin link(destination = 'javascript:void(0)')
+  a(href=destination)&attributes(attributes)
+    block
+
+//- Crean un enlace de UI-Router
+//- [in]  destination (string): el nombre del estado a donde navegara el 
+//-       usuario al hacer clic sobre el enlace
+mixin uiRouterLink(destination)
+  a(uiSref=destination)&attributes(attributes)
+    block
+
+//- Crea una barra de navegacion
+//- [in]  [config] (object): el objeto que especifica la estructura
+//-       de la barra de navegacion, esta debe contener el siguiente formato:
+//-       * sideNavButton (object): el objeto que indica los parametros de 
+//-         configuracion para agregar un boton que active un menu de 
+//-         navegacion lateral
+//-         ** id (string): el ID HTML del boton que activara el menu lateral, 
+//-            debe escribirse con triples comillas, "'ejemplo'"
+//-         ** [icon] (string): las clase de icono que va a ser desplegado en 
+//-            el boton 
+//-         ** [showFlag] (string): la condicion que indica cuando se debe 
+//-            desplegar el boton que activa el menu lateral
+mixin navBar(config = {})
+  mz-navbar&attributes(attributes)
+    if config.sideNavButton
+      mz-navbar-item-container('[align]'="'left'")
+        if config.sideNavButton.showFlag
+          mz-navbar-item
+            a(
+              '[id]'=config.sideNavButton.id
+              '*ngIf'=config.sideNavButton.showFlag
+            )
+              i(class=config.sideNavButton.icon)
+        else
+          mz-navbar-item 
+            a('[id]'=config.sideNavButton.id)
+              i(class=config.sideNavButton.icon)
+    if block
+      mz-navbar-item-container('[align]'="'right'")
+        block
+
+//- Crea un menu de navegacion lateral
+//- [in]  name (string): el ID HTML que sera asociado al menu lateral, debe 
+//-       estar escrito con triples comillas, "'ejemplo'"
+//- [in]  collapseButtonId (string): el ID HTML del boton que activa y 
+//-       desactiva el menu lateral, debe estar escrito con triples comillas, 
+//-       "'ejemplo'"
+mixin sideNav(name, collapseButtonId)
+  mz-sidenav(
+    '[id]'=name
+    '[collapseButtonId]'=collapseButtonId
+  )&attributes(attributes)
+    block
+
+//- Crea un menu colapsable como elemento de un menu lateral
+//- [in]  title (string): el texto a desplegar como el titulo del menu 
+//-       colapsable
+//- [in]  [icon] (string): la clase de icono que va a ser desplegado junto 
+//-       con el titulo del menu colapsable
+mixin sideNavCollapsible(title, icon = null)
+  mz-sidenav-collapsible&attributes(attributes)
+    mz-sidenav-collapsible-header
+      if icon
+        i(class=icon)
+      =title
+    if block
+      mz-sidenav-collapsible-content
+        block
+
+//- Crea un campo de texto
+//- [in]  name (string): el nombre del campo dentro del formulario de captura 
+//-       de la pagina
+//- [in]  label (string): el nombre del campo a desplegar en el formulario
+//- [in]  [icon] (string): el icono a desplegar junto con el campo de texto
+mixin textInput(name, label, icon = null)
+  mz-input-container
+    if icon
+      i(class=icon mz-input-prefix)
+    input(
+      type='text'
+      id=name
+      name=name
+      '[label]'=label
+      mz-input
+    )&attributes(attributes)
+
+//- Crea un campo de contraseña
+//- [in]  name (string): el nombre del campo dentro del formulario de captura 
+//-       de la pagina
+//- [in]  label (string): el nombre del campo a desplegar en el formulario
+//- [in]  [icon] (string): el icono a desplegar junto con el campo de contraseña
+mixin passwordInput(name, label, icon = null)
+  mz-input-container
+    if icon
+      i(class=icon mz-input-prefix)
+    input(
+      type='password'
+      id=name
+      name=name
+      '[label]'=label
+      mz-input
+    )&attributes(attributes)
+
+//- Crea un boton
+//- [in]  type (string): el tipo del boton que va a ser desplegado
+//- [in]  name (string): el nombre del boton que va a tener en el formulario
+//- [in]  text (string): el texto a desplegar dentro del boton
+mixin button(type, name, text, icon = null)
+  button(
+    id=name
+    name=name
+    type=type
+    mz-button
+  )&attributes(attributes)=text
+    if icon
+      i(class=icon)
+
+//- Crea un menu de cascada
+//- [in]  name (string): el ID HTML que identificara este menu, debe ser 
+//-       escrito con comillas triples, "'ejemplo'"
+//- [in]  buttonId (string): el ID HTML del boton que activa la cascada,
+//-       debe ser escrito con comillas triples, "'ejemplo'"
+mixin dropdownMenu(name, buttonId)
+  mz-dropdown(
+    '[id]'=name,
+    '[dropdownButtonId]'=buttonId
+  )&attributes(attributes)
+    if block
+      block
+
+//- Crea una lista de seleccion
+//- [in]  name (string): el ID HTML con la que sera identificada la lista de 
+//-       seleccion, debe tener comillas triples, "'ejemplo'"
+//- [in]  label (string): el texto a desplegar como nombre de la lista de 
+//-       seleccion, debe tener comillas triples, "'ejemplo'"
+//- [in]  placeholder (string): el texto a desplegar como la 1ra opcion de la 
+//-       lista de seleccion
+//- [in]  options (string): el nombre del atributo del componente de Angular 
+//-       cuyos elementos van a ser desplegados
+//- [in]  [optionName] (string): el nombre del atributo de cada elemento leido 
+//-       del arreglo de opciones a desplegar en la lista de seleccion
+//- [in]  [optionValue] (string): el nombre del atributo de cada elemento leido 
+//-       del arreglo de opciones a emplear como el valor a guardar cuando esa 
+//-       opcion es elegida en la lista de seleccion
+//- [in]  [onChangeCallback] (string): la funcion a invocar cuando el valor 
+//-       elegido de la lista de seleccion cambia
+//- [in]  [multiple] (boolean): bandera que indica si esta lista de seleccion 
+//-       es de opcion multiple o no
+mixin select(name, label, placeholder, options, optionName = '', optionValue = '', onChangeCallback = null, multiple = false)
+  mz-select-container
+    if onChangeCallback
+      if multiple
+        select&attributes(attributes)(
+          id=name
+          '[label]'=label
+          '[placeholder]'=placeholder
+          mz-select
+          '(change)'=onChangeCallback
+          multiple
+        )
+          option(
+            '*ngFor'='let x of ' + options
+            '[ngValue]'='x' + optionValue
+          )
+            ='{{ x' + optionName + ' }}'
+      else
+        select&attributes(attributes)(
+          id=name
+          '[label]'=label
+          '[placeholder]'=placeholder
+          mz-select
+          '(change)'=onChangeCallback
+        )
+          option(
+            '*ngFor'='let x of ' + options
+            '[ngValue]'='x' + optionValue
+          )
+            ='{{ x' + optionName + ' }}'
+    else
+      if multiple
+        select&attributes(attributes)(
+          id=name
+          '[label]'=label
+          '[placeholder]'=placeholder
+          mz-select
+          multiple
+        )
+          option(
+            '*ngFor'='let x of ' + options
+            '[ngValue]'='x' + optionValue
+          )
+            ='{{ x' + optionName + ' }}'
+      else 
+        select&attributes(attributes)(
+          id=name
+          '[label]'=label
+          '[placeholder]'=placeholder
+          mz-select
+        )
+          option(
+            '*ngFor'='let x of ' + options
+            '[ngValue]'='x' + optionValue
+          )
+            ='{{ x' + optionName + ' }}'
+
+//- Crea un campo para un acordion
+//- [in]  title (string): el titulo a desplegar como el encabezado del acordion
+//- [in]  [icon] (string): la clase del icono a desplegar junto con el 
+//-       encabezado
+mixin accordionItem(title, icon = null)
+  mz-collapsible-item
+    mz-collapsible-item-header
+      if icon
+        i(class=icon)
+      =title
+    mz-collapsible-item-body
+      block
+
+//- Crea un area de texto
+//- [in]  name (string): el nombre del campo con el cual podra ser referenciado 
+//-       en el componente
+//- [in]  length (uint): el numero maximo de caracteres que el area de texto va 
+//-       a admitir
+//- [in]  label (string): el nombre a desplegar en pantalla para señalar el 
+//-       area de texto
+//- [in]  [icon] (string): el icono a desplegar a un costado del area de texto
+mixin textArea(name, length, label, icon = null)
+  mz-textarea-container
+    if (icon)
+      i.mz-textarea-prefix(class=icon)
+    textarea(
+      id=name
+      name=name
+      '[label]'=label
+      length=length
+      mz-textarea
+    )&attributes(attributes)
+
+//- Crea un campo para subir archivos
+//- [in]  name (string): el nombre del campo con el cual podra ser referenciado 
+//-       en el componente
+//- [in]  label (string): el nombre a desplegar en pantalla para señalar el 
+//-       campo para subir archivos
+//- [in]  buttonLabel (string): el texto a desplegar dentro del boton para 
+//-       seleccionar archivos
+//- [in]  [isMultiple] (boolean): bandera que indica si se permiten elegir 
+//-       multiples archivos para subirlos
+mixin fileInput(name, label, buttonLabel, isMultiple = false)
+  div.file-field.input-field
+      div.btn
+        span: =buttonLabel
+        if (isMultiple)
+          input(id=name name=name type='file' multiple)&attributes(attributes)
+        else
+          input(id=name name=name type='file')&attributes(attributes)
+      div.file-path-wrapper
+        input.file-path.validate(type='text' placeholder=label)
+
+//- Crea una tabla responsiva
+//- [in]  headers (string): el nombre del atributo del componente Angular que 
+//-       contiene la lista de encabezados de la tabla
+mixin responsiveTable(headers)
+  table.highlight.responsive-table&attributes(attributes)
+    thead
+      th('*ngFor'='let header of ' + headers) 
+        ='{{ header }}'
+    tbody
+      block
+
+//- Crea una tabla NO responsiva
+//- [in]  headers (string): el nombre del atributo del componente Angular que 
+//-       contiene la lista de encabezados de la tabla
+mixin table(headers)
+  table.highlight&attributes(attributes)
+    thead
+      th('*ngFor'='let header of ' + headers) 
+        ='{{ header }}'
+    tbody
+      block
+
+//- Crea un campo para elegir una fecha
+//- [in]  name (string): el nombre del campo con el cual podra ser referenciado 
+//-       en el componente
+//- [in]  label (string): el nombre a desplegar en pantalla para distinguir el 
+//-       campo de fecha de los demas
+//- [in]  options (string): el nombre de la variable que contiene las opciones 
+//-       de creacion de Pickadate
+//- [in]  containerClass (string): la clase de estilo que sera aplicado al 
+//-       contenedor del campo de fecha
+mixin dateInput(name, label, options, containerClass='')
+  mz-datepicker-container(class=containerClass)
+    input(
+      id=name
+      name=name
+      type='text',
+      '[label]'=label
+      '[options]'=options
+      mz-datepicker
+    )&attributes(attributes)
+
+//- Agrega un iframe que desplegara el documento cargado con ViewerJS
+//- [in]  path (string): el nombre del atributo del componente de Angular 
+//-       que contiene el URL del archivo a desplegar
+mixin viewerJSDoc(path)
+  iframe(
+    '[src]'=path
+    width='100%'
+    height='100%'
+    allowfullscreen
+    webkitallowfullscreen
+  )

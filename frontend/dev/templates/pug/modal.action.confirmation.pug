@@ -1,0 +1,31 @@
+include globals.pug
+
+mz-modal(
+  '[options]'='modalOptions'
+)
+  mz-modal-header
+    i.mdi.mdi-alert.yellow-text
+    ='{{ title }}'
+  mz-modal-content
+    ='{{ message }}'
+  mz-modal-footer
+    +button(
+      'button',
+      'accept',
+      '{{ langManager.messages.global.accept }}',
+      'mdi mdi-check'
+    )(
+      'class'='red-text'
+      '[flat]'='true'
+      mz-modal-close
+      '(click)'='onActionConfirmed()'
+    )
+    +button(
+      'button',
+      'accept',
+      '{{ langManager.messages.global.cancel }}',
+      'mdi mdi-close'
+    )(
+      '[flat]'='true'
+      mz-modal-close
+    )

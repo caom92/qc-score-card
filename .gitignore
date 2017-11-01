@@ -1,0 +1,11 @@
+.vscode/
+frontend/node_modules/
+*.backup
+frontend/prod/
+frontend/dev/stylesheets/*.css
+frontend/dev/templates/*.html
+frontend/*.css
+backend/vendor/
+backend/tests/
+backend/data/
+*.log

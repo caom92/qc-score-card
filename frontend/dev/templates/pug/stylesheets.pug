@@ -1,0 +1,27 @@
+//- Este archivo contiene las sentencias que permitiran importar todos los 
+//- archivos CSS que son necesarios para la correcta presentacion del sitio
+//- Incluimos nuestra libreria de mixins
+include globals.pug
+
+//- Importa un archivo de hoja de estilo de CSS
+//- [in]  path (string): el URL desde donde se importara el archivo
+mixin importStyleSheet(path)
+  link(
+    rel='stylesheet'
+    type='text/css'
+    href=path
+  )
+
+//- Importa un archivo de hoja de estilo de CSS desde la carpeta del proyecto
+//- [in]  path (string): el URL desde donde se importara el archivo
+mixin importProjectStyleSheet(file)
+  +importStyleSheet(dir.stylesheets + file)
+
+//- Importa un archivo de hoja de estilo de CSS desde la carpeta externa del 
+//- proyecto
+//- [in]  path (string): el URL desde donde se importara el archivo
+mixin importModuleStyleSheet(path)
+  +importStyleSheet(dir.modules + path)
+
+//- Aqui importamos todos nuestros archivos CSS
+//- ADVERTENCIA: el orden es importante

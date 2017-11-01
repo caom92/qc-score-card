@@ -1,0 +1,33 @@
+@import 'globals.less';
+
+// Permite mover el contenido de la pagina hacia la derecha de la pantalla para 
+// hacer espacio para desplegar el menu de la izquierda
+div.container.with-sidenav {
+  @media screen and (min-width: @desktopScreenWidth) {
+    padding-left: @sideNavWidth;
+  }
+}
+
+// Permite desplegar los elementos de la barra de navegacion sin importar el 
+// tamaño de la pantalla 
+mz-navbar-item-container ul.hide-on-med-and-down {
+  display: block !important;
+}
+
+// Quita la sobra de la barra de navegacion
+nav {
+  box-shadow: none !important;
+}
+
+// El area que despliega el logo dentro del menu de la izquierda
+div.logo-area {
+  height: 160px;
+  // background: url(LOGO-URL) no-repeat center;
+  background-size: contain;
+}
+
+// Ajusta el espacio de separacion entre el icono y el texto de las opciones 
+// del menu lateral
+.side-menu-link {
+  padding: 0 16px !important;
+}
