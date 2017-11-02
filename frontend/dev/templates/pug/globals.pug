@@ -325,3 +325,14 @@ mixin viewerJSDoc(path)
     allowfullscreen
     webkitallowfullscreen
   )
+
+mixin radioButton(id, name, label)
+  mz-radio-button-container
+    input(
+      id=id
+      name=name
+      type='radio'
+      '[label]'=label
+      '[withGap]'='true'
+      mz-radio-button
+    )&attributes(attributes)

@@ -1,0 +1,30 @@
+include globals.pug
+
+div.row: div.col.s12 
+  h4
+    i.mdi.mdi-file
+    ='{{ langManager.messages.upload.title }}'
+
+div.row
+  div.col.s12
+    +fileInput(
+      'data-file',
+      '{{ langManager.messages.upload.fileLabel }}',
+      '{{ langManager.messages.upload.buttonLabel }}'
+    )('(change)'='onFileSelected($event)')
+  div.col.s6
+    +radioButton('vegetable-option', 'type-options', 'langManager.messages.upload.vegetables')('checked'='')
+  div.col.s6
+    +radioButton('basil-option', 'type-options', 'langManager.messages.upload.basil')
+
+div.row
+  div.col.s12
+    +button(
+      'submit', 
+      'submit-file', 
+      '{{ langManager.messages.global.submit }}',
+      'mdi mdi-send'
+    )(
+      '(click)'='onFileUploaded()'
+      '[disabled]'='isFormValid == false'
+    )

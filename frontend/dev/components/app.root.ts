@@ -9,6 +9,7 @@ import { HttpModule } from '@angular/http'
 
 // Importamos los componentes de cada pagina de nuestra aplicacion
 import { HomeComponent } from './app.home'
+import { UploadComponent } from './app.upload'
 
 // Importamos los componentes de los modales
 import { ProgressModalComponent } from './modal.please.wait'
@@ -40,14 +41,14 @@ import { ToastService } from '../services/app.toast'
       // dependiendo si la sesion esta iniciada o no
       // config: uiRouterAuthenticatedNavConfig,
       states: [
-        // {
-        //   name: 'state-name',
-        //   url: '/state-url',
-        //   component: StateComponent
-        // }
+        {
+          name: 'upload',
+          url: '/upload',
+          component: UploadComponent
+        }
       ],
       useHash: true,
-      otherwise: '/'
+      otherwise: '/upload'
     })
   ],
   // declaramos los servicios globales
@@ -63,7 +64,8 @@ import { ToastService } from '../services/app.toast'
     DynamicComponentContainerDirective,
     HomeComponent,
     KeysPipe,
-    ProgressModalComponent
+    ProgressModalComponent,
+    UploadComponent
   ],
   // declaramos cualquier componente que sera inyectado dinamicamente
   entryComponents: [

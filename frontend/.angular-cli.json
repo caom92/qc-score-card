@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "project": {
-    "name": "INSERTE EL NOMBRE DEL PROYECTO AQUI"
+    "name": "QC Score Card"
   },
   "apps": [
     {

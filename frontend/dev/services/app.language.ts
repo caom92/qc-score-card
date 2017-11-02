@@ -9,7 +9,16 @@ export class LanguageService
   private translations = {
     es: { // Español
       global: {
-        wait: 'Por favor espere...'
+        wait: 'Por favor espere...',
+        submit: 'Subir'
+      },
+      upload: {
+        fileLabel: 'Archivo de Datos',
+        buttonLabel: 'Subir',
+        vegetables: 'Vegetales y Frutas',
+        basil: 'Albahaca',
+        fileTypeError: 'ERROR: El archivo elegido no es de formato CSV',
+        title: 'Capturar Archivo'
       },
       100: 'No se pudo reconocer el servicio solicitado',
       101: 'Faltó enviar una entrada al servidor',
@@ -32,7 +41,16 @@ export class LanguageService
     },
     en: { // Ingles
       global: {
-        wait: 'Please wait...'
+        wait: 'Please wait...',
+        submit: 'Submit'
+      },
+      upload: {
+        fileLabel: 'Archivo de Datos',
+        buttonLabel: 'Subir',
+        vegetables: 'Vegetales y Frutas',
+        basil: 'Albahaca',
+        fileTypeError: 'ERROR: The selected file is not a CSV',
+        title: 'File Submission'
       },
       100: 'Unable to recognize the requested service',
       101: 'A server input argument was not send',
@@ -61,6 +79,14 @@ export class LanguageService
     global: {
       wait: null
     },
+    upload: {
+      fileLabel: null,
+      buttonLabel: null,
+      vegetables: null,
+      basil: null,
+      fileTypeError: null,
+      title: null
+    }
   }
 
   // Inicializa todos los textos de la aplicacion con el idioma que este 
