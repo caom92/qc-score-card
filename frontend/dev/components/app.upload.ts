@@ -1,19 +1,36 @@
-import { Component } from '@angular/core'
+import { Component, ComponentFactoryResolver, ComponentRef } from '@angular/core'
 import { ToastService } from '../services/app.toast'
 import { GlobalElementsService } from '../services/app.globals'
 import { LanguageService } from '../services/app.language'
+import { StateService } from '@uirouter/angular'
+import { DynamicComponentResolver } from './dynamic.resolver'
+import { GraphComponent } from './app.graph'
+
+// El tipo de documento que el usuario puede subir
+export enum FileType {
+  None,
+  Vegetables,
+  Basil
+}
 
 // Este componente define el comportamiento de la pagina donde el usuario sube 
 // un archivo para ser graficado 
 @Component({
   templateUrl: '../templates/app.upload.html'
 })
-export class UploadComponent
+export class UploadComponent extends DynamicComponentResolver
 {
   // Bandera que indica si el formulario de captura es válido o no
   isFormValid: boolean = false
 
+  // El tipo de archivo que fue subido por el usuario
+  selectedFileType: FileType = FileType.Vegetables
+
+  // Interfaz que leera los contenidos del archivo
   fileReader: FileReader = null
+
+  // Instancia del componente que graficara los datos
+  childComponent: ComponentRef<GraphComponent> = null
 
   // El archivo elegido por el usuario
   selectedFile: any = null
@@ -22,15 +39,37 @@ export class UploadComponent
   constructor(
     private toastManager: ToastService,
     private global: GlobalElementsService,
-    private langManager: LanguageService
+    private langManager: LanguageService,
+    private router: StateService,
+    factoryResolver: ComponentFactoryResolver
   ) {
+    // instanciamos el padre
+    super(factoryResolver)
+
     // instanciamos el lector de archivos
     this.fileReader = new FileReader()
     
     // preparamos el callback a invocar cuando el archivo haya sido cargado
     this.fileReader.onload = () => {
-      // almacenamos el contenido de los datos para su futuro uso
-      localStorage.data = this.fileReader.result
+      
+      // notificamos al usuario que el archivo se leyo exitosamente
+      this.toastManager.showText(
+        this.langManager.messages.upload.success
+      )
+
+      // revisamos si una instancia del componente que grafica los datos habia 
+      // sido creada previamente
+      if (this.childComponent) {
+        this.childComponent.destroy()
+      }
+
+      // creamos la instancia al componente que graficara los datos
+      this.childComponent = this.loadComponent(GraphComponent, {
+        file: {
+          type: this.selectedFileType,
+          info: this.fileReader.result
+        }
+      })
     }
   }
 

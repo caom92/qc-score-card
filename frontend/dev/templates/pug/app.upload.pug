@@ -13,9 +13,16 @@ div.row
       '{{ langManager.messages.upload.buttonLabel }}'
     )('(change)'='onFileSelected($event)')
   div.col.s6
-    +radioButton('vegetable-option', 'type-options', 'langManager.messages.upload.vegetables')('checked'='')
+    +radioButton('vegetable-option', 'type-options', 'langManager.messages.upload.vegetables')(
+      'checked'=''
+      '[value]'='1'
+      '[(ngModel)]'='selectedFileType'
+    )
   div.col.s6
-    +radioButton('basil-option', 'type-options', 'langManager.messages.upload.basil')
+    +radioButton('basil-option', 'type-options', 'langManager.messages.upload.basil')(
+      '[value]'='2'
+      '[(ngModel)]'='selectedFileType'
+    )
 
 div.row
   div.col.s12
@@ -28,3 +35,5 @@ div.row
       '(click)'='onFileUploaded()'
       '[disabled]'='isFormValid == false'
     )
+
+ng-container(dynamicComponentContainer)

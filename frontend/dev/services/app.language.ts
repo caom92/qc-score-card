@@ -10,7 +10,8 @@ export class LanguageService
     es: { // Español
       global: {
         wait: 'Por favor espere...',
-        submit: 'Subir'
+        submit: 'Subir',
+        selectPlaceholder: 'Elija una opción'
       },
       upload: {
         fileLabel: 'Archivo de Datos',
@@ -18,7 +19,17 @@ export class LanguageService
         vegetables: 'Vegetales y Frutas',
         basil: 'Albahaca',
         fileTypeError: 'ERROR: El archivo elegido no es de formato CSV',
-        title: 'Capturar Archivo'
+        title: 'Capturar Archivo',
+        success: 'Archivo subido exitosamente'
+      },
+      sideNav: {
+        upload: 'Subir Archivo'
+      },
+      graph: {
+        title: 'Graficar Datos',
+        zone: 'Zona',
+        product: 'Producto',
+        graphButton: 'Graficar'
       },
       100: 'No se pudo reconocer el servicio solicitado',
       101: 'Faltó enviar una entrada al servidor',
@@ -42,15 +53,26 @@ export class LanguageService
     en: { // Ingles
       global: {
         wait: 'Please wait...',
-        submit: 'Submit'
+        submit: 'Submit',
+        selectPlaceholder: 'Choose an option'
       },
       upload: {
-        fileLabel: 'Archivo de Datos',
-        buttonLabel: 'Subir',
-        vegetables: 'Vegetales y Frutas',
-        basil: 'Albahaca',
+        fileLabel: 'Data File',
+        buttonLabel: 'Upload',
+        vegetables: 'Vegetables & Fruits',
+        basil: 'Basil',
         fileTypeError: 'ERROR: The selected file is not a CSV',
-        title: 'File Submission'
+        title: 'File Submission',
+        success: 'File uploaded successfully'
+      },
+      sideNav: {
+        upload: 'Upload File'
+      },
+      graph: {
+        title: 'Graph Data',
+        zone: 'Zone',
+        product: 'Product',
+        graphButton: 'Graph'
       },
       100: 'Unable to recognize the requested service',
       101: 'A server input argument was not send',
@@ -77,7 +99,8 @@ export class LanguageService
   // desplegara cualquier texto que este almacenado aqui
   messages = {
     global: {
-      wait: null
+      wait: null,
+      selectPlaceholder: null,
     },
     upload: {
       fileLabel: null,
@@ -85,7 +108,17 @@ export class LanguageService
       vegetables: null,
       basil: null,
       fileTypeError: null,
-      title: null
+      title: null,
+      success: null
+    },
+    sideNav: {
+      upload: null
+    },
+    graph: {
+      title: null,
+      zone: null,
+      product: null,
+      graphButton: null
     }
   }
 

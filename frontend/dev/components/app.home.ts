@@ -24,10 +24,14 @@ export class HomeComponent implements OnInit
 
   // Esta funcion se ejecuta al iniciar la pagina
   ngOnInit(): void {
-    if (localStorage.lang === undefined) {
-      localStorage.lang = 'es'
+    if (localStorage.lang == null) {
+      this.langManager.changeLanguage('es')
     }
-    this.langManager.changeLanguage(localStorage.lang)
-    localStorage.data = ''
+    this.langManager.initMessages()
   } // ngOnInit()
+
+  // Esta funcion se ejecuta cuando el usuario cambio el idioma de la pagina
+  onLanguageButtonClicked(lang): void {
+    this.langManager.changeLanguage(lang)
+  }
 } // export class HomeComponent implements OnInit

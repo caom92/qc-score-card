@@ -1,0 +1,35 @@
+include globals.pug
+
+div.row: div.col.s12
+  h4
+    i.mdi.mdi-chart-bar
+    ='{{ langManager.messages.graph.title }}'
+    
+div.row
+  div.col.s12.m6
+    +select(
+      'zone', 'langManager.messages.graph.zone',
+      'langManager.messages.global.selectPlaceholder', 
+      'zones'
+    )(
+      '[(ngModel)]'='selectedZone'
+    )
+  div.col.s12.m6
+    +select(
+      'product', 'langManager.messages.graph.product',
+      'langManager.messages.global.selectPlaceholder', 
+      'products'
+    )(
+      '[(ngModel)]'='selectedProduct'
+    )
+
+div.row
+  div.col.s12.m4
+    +button(
+      'button',
+      'create-graph',
+      '{{ langManager.messages.graph.graphButton }}',
+      'mdi mdi-chart-bar'
+    )(
+      '(click)'='onGraphButtonClicked()'
+    )

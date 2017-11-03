@@ -6,10 +6,12 @@ import { UIRouterModule } from "@uirouter/angular"
 import { MaterializeModule } from 'ng2-materialize'
 import { FormsModule, ReactiveFormsModule }   from '@angular/forms'
 import { HttpModule } from '@angular/http'
+import { PapaParseModule } from 'ngx-papaparse'
 
 // Importamos los componentes de cada pagina de nuestra aplicacion
 import { HomeComponent } from './app.home'
 import { UploadComponent } from './app.upload'
+import { GraphComponent } from './app.graph'
 
 // Importamos los componentes de los modales
 import { ProgressModalComponent } from './modal.please.wait'
@@ -35,6 +37,7 @@ import { ToastService } from '../services/app.toast'
     ReactiveFormsModule,
     HttpModule,
     BrowserAnimationsModule,
+    PapaParseModule,
     MaterializeModule.forRoot(),
     UIRouterModule.forRoot({
       // hay que configurar ui-router para poder redireccionar al usuario 
@@ -43,12 +46,12 @@ import { ToastService } from '../services/app.toast'
       states: [
         {
           name: 'upload',
-          url: '/upload',
+          url: '/',
           component: UploadComponent
-        }
+        },
       ],
       useHash: true,
-      otherwise: '/upload'
+      otherwise: '/'
     })
   ],
   // declaramos los servicios globales
@@ -65,11 +68,13 @@ import { ToastService } from '../services/app.toast'
     HomeComponent,
     KeysPipe,
     ProgressModalComponent,
-    UploadComponent
+    UploadComponent,
+    GraphComponent
   ],
   // declaramos cualquier componente que sera inyectado dinamicamente
   entryComponents: [
     ProgressModalComponent,
+    GraphComponent
   ],
   // indicamos cual es el componente raiz
   bootstrap: [ HomeComponent ]
