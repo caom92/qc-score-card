@@ -20,6 +20,7 @@
     "@angular/platform-browser": "^4.0.0",
     "@angular/platform-browser-dynamic": "^4.0.0",
     "@angular/router": "^4.0.0",
+    "@types/plotly.js": "^1.28.8",
     "@uirouter/angular": "^1.0.0-beta.7",
     "core-js": "^2.4.1",
     "jquery": "^3.2.1",
@@ -28,6 +29,7 @@
     "ng2-materialize": "^1.5.1",
     "ngx-papaparse": "^1.2.5",
     "papaparse": "^4.3.6",
+    "plotly.js": "^1.31.2",
     "rxjs": "^5.4.1",
     "zone.js": "^0.8.14"
   },

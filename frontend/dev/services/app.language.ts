@@ -29,7 +29,8 @@ export class LanguageService
         title: 'Graficar Datos',
         zone: 'Zona',
         product: 'Producto',
-        graphButton: 'Graficar'
+        graphButton: 'Graficar',
+        noResults: 'La zona elegida no tiene registrado el producto elegido'
       },
       100: 'No se pudo reconocer el servicio solicitado',
       101: 'Faltó enviar una entrada al servidor',
@@ -72,7 +73,8 @@ export class LanguageService
         title: 'Graph Data',
         zone: 'Zone',
         product: 'Product',
-        graphButton: 'Graph'
+        graphButton: 'Graph',
+        noResults: 'The selected product is not registered in the selected zone'
       },
       100: 'Unable to recognize the requested service',
       101: 'A server input argument was not send',
@@ -118,7 +120,8 @@ export class LanguageService
       title: null,
       zone: null,
       product: null,
-      graphButton: null
+      graphButton: null,
+      noResults: null
     }
   }
 
