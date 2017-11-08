@@ -371,6 +371,15 @@ export class GraphComponent implements OnInit
 
   // Esta funcion se invoca cuando el usuario hace clic en el boton de graficar
   onGraphButtonClicked(): void {
+    // reinicializamos los datos 
+    this.chartsConfig.numItems = 0
+    for (let c of this.chartsConfig.categories) {
+      c.numItems = c.percentage = 0
+      for (let k of c.keys) {
+        c.numItems = c.percentage = 0
+      }
+    }
+
     // acumulamos el numero de productos por categoria y columna
     this.computeTally()
 
