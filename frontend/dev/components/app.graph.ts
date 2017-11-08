@@ -6,24 +6,36 @@ import { StateService } from '@uirouter/angular'
 import { FileType } from './app.upload'
 import { PapaParseService } from 'ngx-papaparse'
 
+// Clase auxiliar que define los atributos necesarios para generar las graficas 
+// leidos cada columna del archivo
 class ColumnKey 
 {
+  // El numero de unidades de producto que fueron registrados en esa columna
   numItems: number = 0
 
+  // El porcentaje de cajas totales que fueron registrados en esa columna
   percentage: number = 0
 
+  // El nombre de la columna
   name: string = null
 
+  // Constructor
   constructor(name: string) {
     this.name = name
   }
 }
 
+// Clase auxiliar que define los atributos necesarios para generar las graficas
+// leidos de cada categoria de columnas
 class Category extends ColumnKey
 {
+  // El color que representa esta categoria
   color: string = null
+
+  // Los nombres de las columnas que pertenecen a esta categoria
   keys: Array<ColumnKey> = []
 
+  // Constructor
   constructor(name: string, color: string) {
     super(name)
     this.color = color
@@ -359,8 +371,11 @@ export class GraphComponent implements OnInit
 
   // Esta funcion se invoca cuando el usuario hace clic en el boton de graficar
   onGraphButtonClicked(): void {
+    // acumulamos el numero de productos por categoria y columna
     this.computeTally()
 
+    // si no hubo ningun producto registrado con los parametros ingresados por 
+    // el usuario, hay que notificarle
     if (this.chartsConfig.numItems == 0) {
       this.toastManager.showText(
         this.langManager.messages.graph.noResults
@@ -368,7 +383,10 @@ export class GraphComponent implements OnInit
       return 
     }
 
+    // calculamos los porcentajes
     this.computePercentage()
+
+    // desplegamos las graficas
     this.createChart()
-  }
-}
+  } // onGraphButtonClicked(): void
+} // export class GraphComponent implements OnInit
