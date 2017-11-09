@@ -80,7 +80,7 @@ export class UploadComponent extends DynamicComponentResolver
     let file = event.target.files[0]
 
     // revisamos si es un archivo CSV
-    if (file.type != 'text/csv') {
+    if (file.type != 'text/csv' || file.type != 'application/vnd.ms-excel') {
       // si no lo es, notificamos al usuario 
       this.toastManager.showText(
         this.langManager.messages.upload.fileTypeError
