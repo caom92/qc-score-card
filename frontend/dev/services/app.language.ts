@@ -11,7 +11,8 @@ export class LanguageService
       global: {
         wait: 'Por favor espere...',
         submit: 'Subir',
-        selectPlaceholder: 'Elija una opción'
+        selectPlaceholder: 'Elija una opción',
+        reportButton: 'Reporte'
       },
       upload: {
         fileLabel: 'Archivo de Datos',
@@ -55,7 +56,8 @@ export class LanguageService
       global: {
         wait: 'Please wait...',
         submit: 'Submit',
-        selectPlaceholder: 'Choose an option'
+        selectPlaceholder: 'Choose an option',
+        reportButton: 'Report'
       },
       upload: {
         fileLabel: 'Data File',
@@ -103,6 +105,7 @@ export class LanguageService
     global: {
       wait: null,
       selectPlaceholder: null,
+      reportButton: null
     },
     upload: {
       fileLabel: null,

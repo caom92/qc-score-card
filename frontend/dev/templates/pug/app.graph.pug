@@ -24,7 +24,7 @@ div.row
     )
 
 div.row
-  div.col.s12.m4
+  div.col.s6.m4
     +button(
       'button',
       'create-graph',
@@ -33,6 +33,70 @@ div.row
     )(
       '(click)'='onGraphButtonClicked()'
     )
+  div.col.s6.m4('*ngIf'='showReportButton != false')
+    form(
+      method='POST'
+      target='_blank'
+      action='http://manual.jfdc.tech/source/server/report/reportPDF.php'
+      ngNoForm
+    )
+      input(
+        type='hidden'
+        name='lang'
+        '[ngModel]'='reportForm.lang'
+      )
+      input(
+        type='hidden'
+        name='content'
+        '[ngModel]'='reportForm.content'
+      )
+      input(
+        type='hidden'
+        name='style'
+        '[ngModel]'='reportForm.style'
+      )
+      input(
+        type='hidden'
+        name='company'
+        '[ngModel]'='reportForm.company'
+      )
+      input(
+        type='hidden'
+        name='address'
+        '[ngModel]'='reportForm.address'
+      )
+      input(
+        type='hidden'
+        name='logo'
+        '[ngModel]'='reportForm.logo'
+      )
+      input(
+        type='hidden'
+        name='orientation'
+        '[ngModel]'='reportForm.orientation'
+      )
+      input(
+        type='hidden'
+        name='footer'
+        '[ngModel]'='reportForm.footer'
+      )
+      input(
+        type='hidden'
+        name='supervisor'
+        '[ngModel]'='reportForm.supervisor'
+      )
+      input(
+        type='hidden'
+        name='signature'
+        '[ngModel]'='reportForm.signature'
+      )
+      +button(
+        'submit',
+        'report-pdf',
+        '{{ langManager.messages.global.reportButton }}',
+        'mdi mdi-file-pdf-box'
+      )
+    
 
 div#chart0
 

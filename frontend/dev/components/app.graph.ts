@@ -49,6 +49,9 @@ class Category extends ColumnKey
 })
 export class GraphComponent implements OnInit
 {
+  // Bandera que indica si el boton de generar reporte debe mostrarse
+  showReportButton: boolean = false
+
   // La zona elegida por el usuario
   selectedZone: string = 'ALL - TODAS'
 
@@ -77,6 +80,56 @@ export class GraphComponent implements OnInit
   zones: Array<string> = [
     'ALL - TODAS'
   ]
+
+  reportForm: {
+    lang: string,
+    content: string,
+    style: string,
+    company: string,
+    address: string, 
+    logo: string,
+    orientation: string,
+    footer: string,
+    supervisor: string,
+    signature: string
+  } = {
+    lang: localStorage.lang,
+    content: JSON.stringify([{
+      header: '',
+      body: '',
+      footer: ''
+    }]),
+    style: `
+      <style>
+        table.header { 
+          font-family: arial, 
+          sans-serif; 
+          border-collapse: collapse;
+          max-height: 100%
+        }
+        table.header td { 
+          border: 1px solid #000000; 
+          text-align: left;
+        }
+        table.header th { 
+          border: 1px solid #000000; 
+          text-align: left; 
+          font-weight: bold; 
+          background-color: #4CAF50;
+        }
+        table {
+          border: none;
+        }
+      </style>
+    `,
+    company: 'Agroproductos Del Cabo S. A. de C. V.',
+    address: 'Carretera Transpeninsular km 125.5 Maneadero Parte Alta',
+    logo: 'default.png',
+    orientation: 'L',
+    footer: '',
+    supervisor: '',
+    signature: ''
+  }
 
   // Opciones de configuracion que determinan como desplegar las graficas en la 
   // pantalla
@@ -309,6 +362,9 @@ export class GraphComponent implements OnInit
         let barTrace = {
           x: [],
           y: [],
+          text: [],
+          textposition: 'auto',
+          hoverinfo: 'none',
           marker: {
             color: c.color
           },
@@ -321,6 +377,7 @@ export class GraphComponent implements OnInit
         for (let k of c.keys) {
           barTrace.x.push(k.percentage)
           barTrace.y.push(k.name)
+          barTrace.text.push(Math.round(k.percentage))
         }
 
         // agregamos la grafica de barra resultante al arreglo de graficas
@@ -330,6 +387,11 @@ export class GraphComponent implements OnInit
             width: 600,
             height: 360,
             title: c.name,
+            // paper_bgcolor: '#d0d0d0',
+            margin: {
+              t: 80,
+              b: 80
+            },
             yaxis: {
               tickangle: -60
             }
@@ -345,7 +407,8 @@ export class GraphComponent implements OnInit
       layout: {
         width: 600,
         height: 360,
-        title: 'Pending'
+        title: 'Pending',
+        // paper_bgcolor: '#d0d0d0'
       },
       options: {}
     }
@@ -368,6 +431,73 @@ export class GraphComponent implements OnInit
       )
     }
   }
+
+  // Esta funcion crea un archivo de imagen por cada grafica generada por el 
+  // usuario 
+  createChartBitmaps(): void {
+    // numero de graficas desplegadas 
+    let numCharts = 4
+
+    // datos que seran enviados al servidor para crear el reporte PDF
+    let reportData = {
+      header: `
+        <table class="header">
+          <tr>
+            <td>
+              <b>${
+                (localStorage.lang == 'en') ?
+                  'Zone: ' : 'Zona: '
+              }</b>
+              <span>${ this.selectedZone }</span>
+            </td>
+            <td>
+              <b>${
+                (localStorage.lang == 'en') ?
+                  'Product: ' : 'Producto: '
+              }</b>
+              <span>${ this.selectedProduct }</span>
+            </td>
+          </tr>
+        </table>
+      `,
+      body: `
+        <table>
+      `,
+      footer: ''
+    }
+
+    // visitamos cada grafica generada
+    for (let i = 0; i < numCharts; ++i) {
+      // obtenemos el objeto DOM donde se almacena la grafica
+      let chartDiv = document.getElementById(`chart${ i }`)
+
+      // creamos la imagen
+      Plotly.toImage(
+        chartDiv,
+        {
+          format: 'png',
+          width: 600,
+          height: 360 
+        }
+      ).then((dataURL) => {
+        // una vez que la imagen ha sido creada, obtenemos el indice de esta 
+        // imagen
+        let idx = i
+
+        // agregamos la imagen al HTML a enviar al servidor
+        reportData.body += (idx % 2 == 0) ?
+          `<tr><td><img height="260px" src="${ dataURL }"></td>`
+          : `<td><img height="260px" src="${ dataURL }"></td></tr>`
+
+        // si es la ultima grafica a procesar ...
+        if (idx == 3) {
+          // cerramos el HTML y generamos la cadena JSON
+          reportData.body += `</table>`
+          this.reportForm.content = JSON.stringify([ reportData ])
+        }
+      }) // then((dataURL) => {}
+    } // for (let i = 0; i < numCharts; ++i)
+  } // createChartBitmaps(): void
 
   // Esta funcion se invoca cuando el usuario hace clic en el boton de graficar
   onGraphButtonClicked(): void {
@@ -397,5 +527,12 @@ export class GraphComponent implements OnInit
 
     // desplegamos las graficas
     this.createChart()
+
+    // creamos las imagenes que seran enviadas al servidor para generar el 
+    // reporte PDF
+    this.createChartBitmaps()
+
+    // desplegamos el boton de reporte
+    this.showReportButton = true
   } // onGraphButtonClicked(): void
 } // export class GraphComponent implements OnInit
