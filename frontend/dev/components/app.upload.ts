@@ -5,6 +5,7 @@ import { LanguageService } from '../services/app.language'
 import { StateService } from '@uirouter/angular'
 import { DynamicComponentResolver } from './dynamic.resolver'
 import { GraphComponent } from './app.graph'
+import { environment } from '../environments/environment.prod';
 
 // El tipo de documento que el usuario puede subir
 export enum FileType {
@@ -21,19 +22,34 @@ export enum FileType {
 export class UploadComponent extends DynamicComponentResolver
 {
   // Bandera que indica si el formulario de captura es válido o no
-  isFormValid: boolean = false
+  // isFormValid: boolean = false
 
   // El tipo de archivo que fue subido por el usuario
   selectedFileType: FileType = FileType.Vegetables
 
   // Interfaz que leera los contenidos del archivo
-  fileReader: FileReader = null
+  // fileReader: FileReader = null
 
   // Instancia del componente que graficara los datos
   childComponent: ComponentRef<GraphComponent> = null
 
   // El archivo elegido por el usuario
-  selectedFile: any = null
+  // selectedFile: any = null
+
+  // Lista de tipos de archivos a elegir
+  types: Array<{
+    id: FileType,
+    name: string
+  }> = [
+    {
+      id: FileType.Vegetables,
+      name: 'Vegetales - Vegetables'
+    },
+    {
+      id: FileType.Basil,
+      name: 'Albahaca - Basil'
+    }
+  ]
 
   // El constructor de este componente, inyectando los servicios requeridos
   constructor(
@@ -46,6 +62,7 @@ export class UploadComponent extends DynamicComponentResolver
     // instanciamos el padre
     super(factoryResolver)
 
+    /*
     // instanciamos el lector de archivos
     this.fileReader = new FileReader()
     
@@ -71,11 +88,12 @@ export class UploadComponent extends DynamicComponentResolver
         }
       })
     }
+    */
   }
 
   // Esta funcion se invoca cuando el usuario elije un archivo de su 
   // computadora para ser leido
-  onFileSelected(event: any): void {
+  /*onFileSelected(event: any): void {
     // primero obtenemos una instancia del archivo
     let file = event.target.files[0]
 
@@ -104,5 +122,32 @@ export class UploadComponent extends DynamicComponentResolver
   onFileUploaded(): void {
     // leemos el archivo
     this.fileReader.readAsText(this.selectedFile)
+  }*/
+
+  onDocTypeSelected(): void {
+    let fileURL = null
+    switch (this.selectedFileType) {
+      case FileType.Vegetables:
+        fileURL = 'http://score.jfdc.tech/files/vegetables_latest.csv'
+      break
+
+      case FileType.Basil:
+        fileURL = 'http://score.jfdc.tech/files/basil_latest.csv'
+      break
+    }
+
+    // revisamos si una instancia del componente que grafica los datos habia 
+    // sido creada previamente
+    if (this.childComponent) {
+      this.childComponent.destroy()
+    }
+
+    // creamos la instancia al componente que graficara los datos
+    this.childComponent = this.loadComponent(GraphComponent, {
+      file: {
+        type: this.selectedFileType,
+        info: fileURL
+      }
+    })
   }
 }

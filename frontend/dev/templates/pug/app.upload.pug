@@ -5,35 +5,46 @@ div.row: div.col.s12
     i.mdi.mdi-file
     ='{{ langManager.messages.upload.title }}'
 
-div.row
-  div.col.s12
-    +fileInput(
-      'data-file',
-      '{{ langManager.messages.upload.fileLabel }}',
-      '{{ langManager.messages.upload.buttonLabel }}'
-    )('(change)'='onFileSelected($event)')
-  div.col.s6
-    +radioButton('vegetable-option', 'type-options', 'langManager.messages.upload.vegetables')(
-      'checked'=''
-      '[value]'='1'
-      '[(ngModel)]'='selectedFileType'
-    )
-  div.col.s6
-    +radioButton('basil-option', 'type-options', 'langManager.messages.upload.basil')(
-      '[value]'='2'
-      '[(ngModel)]'='selectedFileType'
-    )
+//- div.row
+//-   div.col.s12
+//-     +fileInput(
+//-       'data-file',
+//-       '{{ langManager.messages.upload.fileLabel }}',
+//-       '{{ langManager.messages.upload.buttonLabel }}'
+//-     )('(change)'='onFileSelected($event)')
+//-   div.col.s6
+//-     +radioButton('vegetable-option', 'type-options', 'langManager.messages.upload.vegetables')(
+//-       'checked'=''
+//-       '[value]'='1'
+//-       '[(ngModel)]'='selectedFileType'
+//-     )
+//-   div.col.s6
+//-     +radioButton('basil-option', 'type-options', 'langManager.messages.upload.basil')(
+//-       '[value]'='2'
+//-       '[(ngModel)]'='selectedFileType'
+//-     )
 
+//- div.row
+//-   div.col.s12
+//-     +button(
+//-       'submit', 
+//-       'submit-file', 
+//-       '{{ langManager.messages.global.submit }}',
+//-       'mdi mdi-send'
+//-     )(
+//-       '(click)'='onFileUploaded()'
+//-       '[disabled]'='isFormValid == false'
+//-     )
 div.row
   div.col.s12
-    +button(
-      'submit', 
-      'submit-file', 
-      '{{ langManager.messages.global.submit }}',
-      'mdi mdi-send'
+    +select(
+      'document-type',
+      'langManager.messages.upload.docType',
+      'langManager.messages.global.selectPlaceholder',
+      'types', '.name', '.id',
+      'onDocTypeSelected()'
     )(
-      '(click)'='onFileUploaded()'
-      '[disabled]'='isFormValid == false'
+      '[ngModel]'='selectedFileType'
     )
 
 ng-container(dynamicComponentContainer)

@@ -222,7 +222,7 @@ export class GraphComponent implements OnInit
 
     // leemos la informacion del archivo CSV y lo almacenamos en un JSON para 
     // facilitar su manejo
-    this.file.info = this.csvParser.parse(this.file.info, {
+    /*this.file.info = this.csvParser.parse(this.file.info, {
       delimiter: ',',
       header: true,
       dynamicTyping: true,
@@ -254,7 +254,50 @@ export class GraphComponent implements OnInit
 
     // agregamos la lista temporal a la lista final de zonas y productos
     this.zones = this.zones.concat(zones)
-    this.products = this.products.concat(products)
+    this.products = this.products.concat(products)*/
+
+    this.csvParser.parse(this.file.info, {
+      delimiter: ',',
+      header: true,
+      dynamicTyping: true,
+      skipEmptyLines: true,
+      download: true,
+      complete: (results, file) => {
+        this.file.info = results
+
+        // notificamos al usuario que el archivo se leyo exitosamente
+        this.toastManager.showText(
+          this.langManager.messages.upload.success
+        )
+
+        // visitamos cada renglon del archivo
+        for (let row of this.file.info) {
+          // revisamos si el producto se encuentra en la lista de productos
+          let idx = products.indexOf(row[this.chartsConfig.productKey]
+            .toUpperCase())
+          
+          // si no se encuentra, lo agregamos
+          if (idx == -1) {
+            products.push(row[this.chartsConfig.productKey].toUpperCase())
+          }
+
+          // hacemos lo mismo con la zona
+          idx = zones.indexOf(row[this.chartsConfig.zoneKey].toUpperCase())
+          
+          if (idx == -1) {
+            zones.push(row[this.chartsConfig.zoneKey].toUpperCase())
+          }
+        }
+
+        // ordenamos la lista temporal de zonas y productos
+        zones.sort()
+        products.sort()
+
+        // agregamos la lista temporal a la lista final de zonas y productos
+        this.zones = this.zones.concat(zones)
+        this.products = this.products.concat(products)
+      }
+    })
   }
 
   // Calcula el acumulado de productos para cada categoria registrada en el 

@@ -11,9 +11,6 @@ RewriteBase /NOMBRE RAIZ DEL SITIO AQUI/
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-l
 
-# Redireccionamos un enlace vacio a la pagina principal
-RewriteRule ^$ frontend/layouts/index.html [NC,L,QSA]
-
 # Redireccionamos las peticiones de servicio al backend
 RewriteRule ^services\/([a-zA-Z0-9\_\-\/]+)$ backend/main.php [NC,L,QSA]
 
