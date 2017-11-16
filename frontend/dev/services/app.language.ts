@@ -21,7 +21,8 @@ export class LanguageService
         basil: 'Albahaca',
         fileTypeError: 'ERROR: El archivo elegido no es de formato CSV',
         title: 'Capturar Archivo',
-        success: 'Archivo subido exitosamente',
+        success: 'Archivo leído exitosamente',
+        error: 'Error al leer el archivo',
         docType: 'Tipo de Archivo'
       },
       sideNav: {
@@ -67,7 +68,8 @@ export class LanguageService
         basil: 'Basil',
         fileTypeError: 'ERROR: The selected file is not a CSV',
         title: 'File Submission',
-        success: 'File uploaded successfully',
+        success: 'File read successfully',
+        error: 'Error reading the file',
         docType: 'Document Type'
       },
       sideNav: {
@@ -117,6 +119,7 @@ export class LanguageService
       fileTypeError: null,
       title: null,
       success: null,
+      error: null,
       docType: null
     },
     sideNav: {

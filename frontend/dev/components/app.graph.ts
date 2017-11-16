@@ -5,6 +5,8 @@ import { LanguageService } from '../services/app.language'
 import { StateService } from '@uirouter/angular'
 import { FileType } from './app.upload'
 import { PapaParseService } from 'ngx-papaparse'
+import { MzModalService } from 'ng2-materialize'
+import { ProgressModalComponent } from './modal.please.wait'
 
 // Clase auxiliar que define los atributos necesarios para generar las graficas 
 // leidos cada columna del archivo
@@ -51,6 +53,9 @@ export class GraphComponent implements OnInit
 {
   // Bandera que indica si el boton de generar reporte debe mostrarse
   showReportButton: boolean = false
+
+  // Bandera que indica si el contenido de este componente debe desplegarse o no
+  displayContent: boolean = false 
 
   // La zona elegida por el usuario
   selectedZone: string = 'ALL - TODAS'
@@ -158,7 +163,8 @@ export class GraphComponent implements OnInit
     private global: GlobalElementsService,
     private langManager: LanguageService,
     private router: StateService,
-    private csvParser: PapaParseService
+    private csvParser: PapaParseService,
+    private modalManager: MzModalService
   ) {
   }
 
@@ -256,6 +262,9 @@ export class GraphComponent implements OnInit
     this.zones = this.zones.concat(zones)
     this.products = this.products.concat(products)*/
 
+    // desplegamos el modal de proceso de espera
+    let modal = this.modalManager.open(ProgressModalComponent)
+
     this.csvParser.parse(this.file.info, {
       delimiter: ',',
       header: true,
@@ -263,7 +272,14 @@ export class GraphComponent implements OnInit
       skipEmptyLines: true,
       download: true,
       complete: (results, file) => {
+        // cerramos el modal de espera
+        modal.instance.modalComponent.close()
+
+        // guardamos el contenido del archivo para procesarlo
         this.file.info = results
+
+        // desplegamos el contenido del componente
+        this.displayContent = true
 
         // notificamos al usuario que el archivo se leyo exitosamente
         this.toastManager.showText(
@@ -296,6 +312,16 @@ export class GraphComponent implements OnInit
         // agregamos la lista temporal a la lista final de zonas y productos
         this.zones = this.zones.concat(zones)
         this.products = this.products.concat(products)
+      },
+      error: (error, file) => {
+        // cerramos el modal de espera
+        modal.instance.modalComponent.close()
+
+        // notificamos al usuario que el archivo se leyo exitosamente
+        this.toastManager.showText(
+          this.langManager.messages.upload.error
+        )
+        console.log(error)
       }
     })
   }
