@@ -287,7 +287,7 @@ export class GraphComponent implements OnInit
         )
 
         // visitamos cada renglon del archivo
-        for (let row of this.file.info) {
+        for (let row of this.file.info.data) {
           // revisamos si el producto se encuentra en la lista de productos
           let idx = products.indexOf(row[this.chartsConfig.productKey]
             .toUpperCase())
