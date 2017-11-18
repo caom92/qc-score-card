@@ -57,11 +57,23 @@ export class GraphComponent implements OnInit
   // Bandera que indica si el contenido de este componente debe desplegarse o no
   displayContent: boolean = false 
 
+  // Limite inferior para elegir una fecha para graficar
+  minDate: number = Number.MAX_SAFE_INTEGER
+
+  // Limite superior para elegir una fecha para graficar 
+  maxDate: number = 0
+
   // La zona elegida por el usuario
   selectedZone: string = 'ALL - TODAS'
 
   // El producto elegido por el usuario
   selectedProduct: string = 'ALL - TODOS'
+
+  // La fecha de inicio de la busqueda
+  startDate: any = null
+  
+  // La fecha final de la busqueda
+  endDate: any = null
 
   // El archivo subido
   @Input()
@@ -303,7 +315,34 @@ export class GraphComponent implements OnInit
           if (idx == -1) {
             zones.push(row[this.chartsConfig.zoneKey].toUpperCase())
           }
+
+          // obtenemos la fecha de este registro
+          let date = 
+            Date.parse(row['TSDone'].replace(/\s/g, ''))
+          
+          // si la fecha es mas chica que el limite inferior, la almacenamos 
+          // como el nuevo limite inferior
+          if (date < this.minDate) {
+            this.minDate = date
+          }
+
+          // si la fecha es mas grande que el limite superior, la almacenamos
+          // como el nuevo limite superior
+          if (date > this.maxDate) {
+            this.maxDate = date
+          }
         }
+
+        // guardamos los limites inferior y superior para la seleccion de fecha
+        this.langManager.translations.es.global.datePickerConfig['min'] = 
+        this.langManager.translations.en.global.datePickerConfig['min'] =
+        this.startDate =
+          new Date(this.minDate)
+        
+        this.langManager.translations.es.global.datePickerConfig['max'] = 
+        this.langManager.translations.en.global.datePickerConfig['max'] =
+        this.endDate =
+          new Date(this.maxDate)
 
         // ordenamos la lista temporal de zonas y productos
         zones.sort()
@@ -329,8 +368,19 @@ export class GraphComponent implements OnInit
   // Calcula el acumulado de productos para cada categoria registrada en el 
   // archivo leido
   computeTally(): void {
+    // convertimos los limites de fecha a timestamps
+    let minDate = Date.parse(this.startDate)
+    let maxDate = Date.parse(this.endDate)
+
     // visitamos cada renglon del archivo
     for (let row of this.file.info.data) {
+      // revisamos que los datos registrados en este renglon esten dentro del 
+      // intervalo de fecha elegido por el usuario
+      let date = Date.parse(row['TSDone'].replace(/\s/g, ''))
+      if (date < minDate || date > maxDate) {
+        continue
+      }
+
       // si el usuario eligio una zona especifica, solo contabilizaremos los 
       // objetos registrados en esa zona
       if (this.selectedZone != 'ALL - TODAS') {
@@ -512,6 +562,18 @@ export class GraphComponent implements OnInit
       header: `
         <table class="header">
           <tr>
+            <td>
+              <b>${
+                (localStorage.lang == 'en') ?
+                  'From: ' : 'Del: '
+              }</b>
+              <span>${ this.startDate }</span>
+              <b>${
+                (localStorage.lang == 'en') ?
+                  ' To: ' : ' Al: '
+              }</b>
+              <span>${ this.endDate }</span>
+            </td>
             <td>
               <b>${
                 (localStorage.lang == 'en') ?

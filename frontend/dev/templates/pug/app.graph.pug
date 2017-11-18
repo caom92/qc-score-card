@@ -7,6 +7,24 @@ ng-container('*ngIf'='displayContent')
       ='{{ langManager.messages.graph.title }}'
       
   div.row
+    +dateInput(
+      'start-date',
+      'langManager.messages.global.startDate',
+      'langManager.messages.global.datePickerConfig',
+      'col s12 m6'
+    )(
+      '[(ngModel)]'='startDate'
+    )
+    +dateInput(
+      'end-date',
+      'langManager.messages.global.endDate',
+      'langManager.messages.global.datePickerConfig',
+      'col s12 m6'
+    )(
+      '[(ngModel)]'='endDate'
+    )
+
+  div.row
     div.col.s12.m6
       +select(
         'zone', 'langManager.messages.graph.zone',

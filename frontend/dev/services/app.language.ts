@@ -6,13 +6,42 @@ import { Injectable } from '@angular/core'
 export class LanguageService
 {
   // La lista de traducciones para todos los textos del sistema
-  private translations = {
+  translations = {
     es: { // Español
       global: {
         wait: 'Por favor espere...',
         submit: 'Subir',
         selectPlaceholder: 'Elija una opción',
-        reportButton: 'Reporte'
+        reportButton: 'Reporte',
+        startDate: 'Fecha de Inicio',
+        endDate: 'Fecha Final',
+        datePickerConfig: {
+          closeOnSelect: true,
+          closeOnClear: false,
+          monthsFull: [
+            'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio',
+            'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+          ],
+          monthsShort: [
+            'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep',
+            'Oct', 'Nov', 'Dec'
+          ],
+          weekdaysFull: [
+            'Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes',
+            'Sábado'
+          ],
+          weekdaysShort: [
+            'Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'
+          ],
+          weekdaysLetter: [
+            'D', 'L', 'M', 'R', 'J', 'V', 'S'
+          ],
+          today: 'Hoy',
+          clear: 'Borrar',
+          close: 'Cerrar',
+          format: 'dddd, dd mmmm, yyyy',
+          formatSubmit: "yyyy-mm-dd"
+        }
       },
       upload: {
         fileLabel: 'Archivo de Datos',
@@ -59,7 +88,15 @@ export class LanguageService
         wait: 'Please wait...',
         submit: 'Submit',
         selectPlaceholder: 'Choose an option',
-        reportButton: 'Report'
+        reportButton: 'Report',
+        startDate: 'Start Date',
+        endDate: 'End Date',
+        datePickerConfig: {
+          closeOnSelect: true,
+          closeOnClear: false,
+          format: 'dddd, dd mmmm, yyyy',
+          formatSubmit: "yyyy-mm-dd"
+        }
       },
       upload: {
         fileLabel: 'Data File',
@@ -109,7 +146,8 @@ export class LanguageService
     global: {
       wait: null,
       selectPlaceholder: null,
-      reportButton: null
+      reportButton: null,
+      datePickerConfig: null
     },
     upload: {
       fileLabel: null,
