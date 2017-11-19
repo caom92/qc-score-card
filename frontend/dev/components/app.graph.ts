@@ -64,7 +64,13 @@ export class GraphComponent implements OnInit
   maxDate: number = 0
 
   // La zona elegida por el usuario
-  selectedZone: string = 'ALL - TODAS'
+  selectedZone: {
+    name: string,
+    products: Array<string>
+  } = {
+    name: 'ALL - TODAS',
+    products: [ 'ALL - TODOS' ]
+  }
 
   // El producto elegido por el usuario
   selectedProduct: string = 'ALL - TODOS'
@@ -94,9 +100,13 @@ export class GraphComponent implements OnInit
   ]
 
   // Lista de zonas a elegir por el usuario
-  zones: Array<string> = [
-    'ALL - TODAS'
-  ]
+  zones: Array<{
+    name: string,
+    products: Array<string>
+  }> = [{
+    name: 'ALL - TODAS',
+    products: []
+  }]
 
   reportForm: {
     lang: string,
@@ -182,12 +192,6 @@ export class GraphComponent implements OnInit
 
   // Esta funcion se ejecuta al iniciar la pagina
   ngOnInit(): void {
-    // inicializamos variables temporales para almacenar renglones, zonas y 
-    // productos
-    let tempRows = []
-    let zones = []
-    let products = []
-
     // inicializamos variables que contendran los encabezados para el producto 
     // y la zona, dependiendo del tipo de archivo subido por el usuario
     switch (this.file.type) {
@@ -298,22 +302,37 @@ export class GraphComponent implements OnInit
           this.langManager.messages.upload.success
         )
 
+        // almacenamiento temporal para zonas y productos revisados
+        let checkedZones = []
+        let zones = []
+        let products = []
+
         // visitamos cada renglon del archivo
         for (let row of this.file.info.data) {
+          let zone = row[this.chartsConfig.zoneKey].toUpperCase()
+          let product = row[this.chartsConfig.productKey].toUpperCase()
+          let idx = checkedZones.indexOf(zone)
+
+          if (idx > -1) {
+            let p = zones[idx].products.indexOf(product)
+
+            if (p == -1) {
+              zones[idx].products.push(product)
+            }
+          } else {
+            checkedZones.push(zone)
+            zones.push({ 
+              name: zone,
+              products: [ product ]
+            })
+          }
+
           // revisamos si el producto se encuentra en la lista de productos
-          let idx = products.indexOf(row[this.chartsConfig.productKey]
-            .toUpperCase())
+          idx = products.indexOf(product)
           
           // si no se encuentra, lo agregamos
           if (idx == -1) {
-            products.push(row[this.chartsConfig.productKey].toUpperCase())
-          }
-
-          // hacemos lo mismo con la zona
-          idx = zones.indexOf(row[this.chartsConfig.zoneKey].toUpperCase())
-          
-          if (idx == -1) {
-            zones.push(row[this.chartsConfig.zoneKey].toUpperCase())
+            products.push(product)
           }
 
           // obtenemos la fecha de este registro
@@ -345,12 +364,24 @@ export class GraphComponent implements OnInit
           new Date(this.maxDate)
 
         // ordenamos la lista temporal de zonas y productos
-        zones.sort()
+        zones.sort(function(a, b) {
+          if (a.name < b.name) {
+            return -1
+          } else if (a.name > b.name) {
+            return 1
+          } else {
+            return 0
+          }
+        })
         products.sort()
 
         // agregamos la lista temporal a la lista final de zonas y productos
         this.zones = this.zones.concat(zones)
-        this.products = this.products.concat(products)
+        this.zones[0].products = this.zones[0].products.concat(products)
+
+        for (let zone of this.zones) {
+          zone.products.sort()
+        }
       },
       error: (error, file) => {
         // cerramos el modal de espera
@@ -383,8 +414,8 @@ export class GraphComponent implements OnInit
 
       // si el usuario eligio una zona especifica, solo contabilizaremos los 
       // objetos registrados en esa zona
-      if (this.selectedZone != 'ALL - TODAS') {
-        if (row[this.chartsConfig.zoneKey] != this.selectedZone) {
+      if (this.selectedZone.name != 'ALL - TODAS') {
+        if (row[this.chartsConfig.zoneKey] != this.selectedZone.name) {
           continue
         }
       }
@@ -579,7 +610,7 @@ export class GraphComponent implements OnInit
                 (localStorage.lang == 'en') ?
                   'Zone: ' : 'Zona: '
               }</b>
-              <span>${ this.selectedZone }</span>
+              <span>${ this.selectedZone.name }</span>
             </td>
             <td>
               <b>${

@@ -29,7 +29,7 @@ ng-container('*ngIf'='displayContent')
       +select(
         'zone', 'langManager.messages.graph.zone',
         'langManager.messages.global.selectPlaceholder', 
-        'zones'
+        'zones', '.name'
       )(
         '[(ngModel)]'='selectedZone'
       )
@@ -37,7 +37,7 @@ ng-container('*ngIf'='displayContent')
       +select(
         'product', 'langManager.messages.graph.product',
         'langManager.messages.global.selectPlaceholder', 
-        'products'
+        'selectedZone.products'
       )(
         '[(ngModel)]'='selectedProduct'
       )
