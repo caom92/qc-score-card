@@ -585,6 +585,20 @@ export class GraphComponent implements OnInit
   // Esta funcion crea un archivo de imagen por cada grafica generada por el 
   // usuario 
   createChartBitmaps(): void {
+    let startDateMonth = this.startDate.getMonth() + 1
+    let startDateDay = this.startDate.getUTCDate()
+    let startDate = 
+      `${ this.startDate.getFullYear() }-` +
+      `${ (startDateMonth < 10) ? '0' + startDateMonth : startDateMonth }-` +
+      `${ (startDateDay < 10) ? '0' + startDateDay : startDateDay }`
+
+    let endDateMonth = this.endDate.getMonth() + 1
+    let endDateDay = this.endDate.getUTCDate()
+    let endDate = 
+      `${ this.endDate.getFullYear() }-` +
+      `${ (endDateMonth < 10) ? '0' + endDateMonth : endDateMonth }-` +
+      `${ (endDateDay < 10) ? '0' + endDateDay : endDateDay }`
+
     // numero de graficas desplegadas 
     let numCharts = 4
 
@@ -598,12 +612,12 @@ export class GraphComponent implements OnInit
                 (localStorage.lang == 'en') ?
                   'From: ' : 'Del: '
               }</b>
-              <span>${ this.startDate }</span>
+              <span>${ startDate }</span>
               <b>${
                 (localStorage.lang == 'en') ?
                   ' To: ' : ' Al: '
               }</b>
-              <span>${ this.endDate }</span>
+              <span>${ endDate }</span>
             </td>
             <td>
               <b>${
