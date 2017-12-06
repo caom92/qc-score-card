@@ -353,15 +353,34 @@ export class GraphComponent implements OnInit
         }
 
         // guardamos los limites inferior y superior para la seleccion de fecha
+        let tempMinDate = null
         this.langManager.translations.es.global.datePickerConfig['min'] = 
         this.langManager.translations.en.global.datePickerConfig['min'] =
-        this.startDate =
+        tempMinDate =
           new Date(this.minDate)
         
+        let tempMaxDate = null
         this.langManager.translations.es.global.datePickerConfig['max'] = 
         this.langManager.translations.en.global.datePickerConfig['max'] =
-        this.endDate =
+        tempMaxDate =
           new Date(this.maxDate)
+        
+        let startDateMonth = tempMinDate.getMonth() + 1
+        let startDateDay = tempMinDate.getUTCDate()
+        let startDate = 
+          `${ tempMinDate.getFullYear() }-` +
+          `${ (startDateMonth < 10) ? '0' + startDateMonth : startDateMonth }-` +
+          `${ (startDateDay < 10) ? '0' + startDateDay : startDateDay }`
+        
+        let endDateMonth = tempMaxDate.getMonth() + 1
+        let endDateDay = tempMaxDate.getUTCDate()
+        let endDate = 
+          `${ tempMaxDate.getFullYear() }-` +
+          `${ (endDateMonth < 10) ? '0' + endDateMonth : endDateMonth }-` +
+          `${ (endDateDay < 10) ? '0' + endDateDay : endDateDay }`
+
+        this.startDate = startDate
+        this.endDate = endDate
 
         // ordenamos la lista temporal de zonas y productos
         zones.sort(function(a, b) {
@@ -585,7 +604,7 @@ export class GraphComponent implements OnInit
   // Esta funcion crea un archivo de imagen por cada grafica generada por el 
   // usuario 
   createChartBitmaps(): void {
-    let startDateMonth = this.startDate.getMonth() + 1
+    /*let startDateMonth = this.startDate.getMonth() + 1
     let startDateDay = this.startDate.getUTCDate()
     let startDate = 
       `${ this.startDate.getFullYear() }-` +
@@ -597,7 +616,7 @@ export class GraphComponent implements OnInit
     let endDate = 
       `${ this.endDate.getFullYear() }-` +
       `${ (endDateMonth < 10) ? '0' + endDateMonth : endDateMonth }-` +
-      `${ (endDateDay < 10) ? '0' + endDateDay : endDateDay }`
+      `${ (endDateDay < 10) ? '0' + endDateDay : endDateDay }`*/
 
     // numero de graficas desplegadas 
     let numCharts = 4
@@ -612,12 +631,12 @@ export class GraphComponent implements OnInit
                 (localStorage.lang == 'en') ?
                   'From: ' : 'Del: '
               }</b>
-              <span>${ startDate }</span>
+              <span>${ this.startDate }</span>
               <b>${
                 (localStorage.lang == 'en') ?
                   ' To: ' : ' Al: '
               }</b>
-              <span>${ endDate }</span>
+              <span>${ this.endDate }</span>
             </td>
             <td>
               <b>${

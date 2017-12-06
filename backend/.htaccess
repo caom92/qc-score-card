@@ -3,7 +3,7 @@ ServerSignature Off
 
 # Indicamos que usaremos el motor de redireccionamiento
 RewriteEngine On
-RewriteBase /NOMBRE RAIZ DEL SITIO AQUI/
+RewriteBase /qc-score/
 
 # Redireccionamos cualquier peticion que no sea un directorio, un archivo o
 # un enlance

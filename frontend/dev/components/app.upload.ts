@@ -5,7 +5,7 @@ import { LanguageService } from '../services/app.language'
 import { StateService } from '@uirouter/angular'
 import { DynamicComponentResolver } from './dynamic.resolver'
 import { GraphComponent } from './app.graph'
-import { environment } from '../environments/environment.prod';
+import { environment } from '../environments/environment'
 
 // El tipo de documento que el usuario puede subir
 export enum FileType {
@@ -128,11 +128,15 @@ export class UploadComponent extends DynamicComponentResolver
     let fileURL = null
     switch (this.selectedFileType) {
       case FileType.Vegetables:
-        fileURL = 'http://score.jfdc.tech/files/vegetables_latest.csv'
+        fileURL = (environment.production) ?  
+          'http://score.jfdc.tech/files/vegetables_latest.csv'
+          : 'http://localhost/qc-score/backend/vegetables_latest.php'
       break
 
       case FileType.Basil:
-        fileURL = 'http://score.jfdc.tech/files/basil_latest.csv'
+        fileURL = (environment.production) ?
+          'http://score.jfdc.tech/files/basil_latest.csv'
+          : 'http://localhost/qc-score/backend/basil_latest.php'
       break
     }
 
