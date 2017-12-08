@@ -8,26 +8,10 @@ import { PapaParseService } from 'ngx-papaparse'
 import { MzModalService } from 'ng2-materialize'
 import { ProgressModalComponent } from './modal.please.wait'
 
+// Esta clase define la base para declarar el componente que graficara los 
+// datos de uno de los archivos leidos
 export abstract class GraphComponent
 {
-  // Bandera que indica si el boton de generar reporte debe mostrarse
-  showReportButton: boolean = false
-  
-  // Bandera que indica si el contenido de este componente debe desplegarse o no
-  displayContent: boolean = false 
-
-  // Limite inferior para elegir una fecha para graficar
-  minDate: number = Number.MAX_SAFE_INTEGER
-
-  // Limite superior para elegir una fecha para graficar 
-  maxDate: number = 0
-
-  // La fecha de inicio de la busqueda
-  startDate: any = null
-  
-  // La fecha final de la busqueda
-  endDate: any = null
-
   // El archivo subido
   @Input()
   file: {
@@ -37,9 +21,6 @@ export abstract class GraphComponent
     type: FileType.None,
     info: null
   }
-
-  // Los encabezados del archivo
-  headers: Array<string> = []
 
   // Configuracion del reporte PDF que sera enviado al servidor
   reportForm: {
@@ -93,7 +74,8 @@ export abstract class GraphComponent
   }
 
   // La funcion a invocar cuando se lee el archivo CSV
-  onFileReadCallback: (results: any, file: any) => void = null
+  onFileReadCallback: (results: any, file: any) => void = 
+    (results, file) => null
 
   // El constructor de este componente, inyectando los servicios requeridos
   constructor(
@@ -105,6 +87,13 @@ export abstract class GraphComponent
     protected modalManager: MzModalService
   ) {
   }
+
+  // Crea las graficas en pantalla
+  abstract createChart(): void
+  
+  // Esta funcion crea un archivo de imagen por cada grafica generada por el 
+  // usuario 
+  abstract createChartBitmaps(): void
 
   // Lee el archivo elegido por el usuario
   readFile(): void {
@@ -123,9 +112,6 @@ export abstract class GraphComponent
 
         // guardamos el contenido del archivo para procesarlo
         this.file.info = results
-      
-        // desplegamos el contenido del componente
-        this.displayContent = true
   
         // notificamos al usuario que el archivo se leyo exitosamente
         this.toastManager.showText(
@@ -146,24 +132,4 @@ export abstract class GraphComponent
       }
     })
   }
-
-  // Crea las graficas en pantalla
-  abstract createChart(): void
-
-  // Esta funcion crea un archivo de imagen por cada grafica generada por el 
-  // usuario 
-  abstract createChartBitmaps(): void
-
-  // Esta funcion se invoca cuando el usuario hace clic en el boton de graficar
-  displayChart(): void {
-    // desplegamos las graficas
-    this.createChart()
-
-    // creamos las imagenes que seran enviadas al servidor para generar el 
-    // reporte PDF
-    this.createChartBitmaps()
-
-    // desplegamos el boton de reporte
-    this.showReportButton = true
-  } // onGraphButtonClicked(): void
 }

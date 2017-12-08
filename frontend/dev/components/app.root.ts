@@ -12,6 +12,7 @@ import { PapaParseModule } from 'ngx-papaparse'
 import { HomeComponent } from './app.home'
 import { UploadComponent } from './app.upload'
 import { ScoresGraphComponent } from './graph.scores'
+import { ComplaintsGraphComponent } from './graph.complaints'
 
 // Importamos los componentes de los modales
 import { ProgressModalComponent } from './modal.please.wait'
@@ -69,12 +70,14 @@ import { ToastService } from '../services/app.toast'
     KeysPipe,
     ProgressModalComponent,
     UploadComponent,
-    ScoresGraphComponent
+    ScoresGraphComponent,
+    ComplaintsGraphComponent
   ],
   // declaramos cualquier componente que sera inyectado dinamicamente
   entryComponents: [
     ProgressModalComponent,
-    ScoresGraphComponent
+    ScoresGraphComponent,
+    ComplaintsGraphComponent
   ],
   // indicamos cual es el componente raiz
   bootstrap: [ HomeComponent ]

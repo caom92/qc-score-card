@@ -7,98 +7,15 @@ import { FileType } from './app.upload'
 import { PapaParseService } from 'ngx-papaparse'
 import { MzModalService } from 'ng2-materialize'
 import { ProgressModalComponent } from './modal.please.wait'
-import { GraphComponent } from './graph'
-
-// Clase auxiliar que define los atributos necesarios para generar las graficas 
-// leidos cada columna del archivo
-class ColumnKey 
-{
-  // El numero de unidades de producto que fueron registrados en esa columna
-  numItems: number = 0
-
-  // El porcentaje de cajas totales que fueron registrados en esa columna
-  percentage: number = 0
-
-  // El nombre de la columna
-  name: string = null
-
-  // Constructor
-  constructor(name: string) {
-    this.name = name
-  }
-}
-
-// Clase auxiliar que define los atributos necesarios para generar las graficas
-// leidos de cada categoria de columnas
-class Category extends ColumnKey
-{
-  // El color que representa esta categoria
-  color: string = null
-
-  // Los nombres de las columnas que pertenecen a esta categoria
-  keys: Array<ColumnKey> = []
-
-  // Constructor
-  constructor(name: string, color: string) {
-    super(name)
-    this.color = color
-  }
-}
-
-class Zone
-{
-  name: string
-  products: Array<string>
-}
+import { DateZoneProductCategoryGraphComponent, Category, ColumnKey } from './graph.date.zone.product.category'
 
 // Este componente describe el comportamiento de la pantalla donde se 
 // graficaran los datos del archivo
 @Component({
   templateUrl: '../templates/graph.scores.html'
 })
-export class ScoresGraphComponent extends GraphComponent implements OnInit
+export class ScoresGraphComponent extends DateZoneProductCategoryGraphComponent
 {
-  // La zona elegida por el usuario
-  selectedZone: Zone = {
-    name: 'ALL - TODAS',
-    products: [ 'ALL - TODOS' ]
-  }
-
-  // El producto elegido por el usuario
-  selectedProduct: string = 'ALL - TODOS'
-
-  // Lista de productos a elegir por el usuario
-  products: Array<string> = [
-    'ALL - TODOS'
-  ]
-
-  // Lista de zonas a elegir por el usuario
-  zones: Array<Zone> = [{
-    name: 'ALL - TODAS',
-    products: []
-  }]
-
-  // Opciones de configuracion que determinan como desplegar las graficas en la 
-  // pantalla
-  chartsConfig: {
-    categories: Array<Category>,
-    numItems: number,
-    zoneKey: string,
-    productKey: string,
-    charts: Array<any>
-  } = {
-    categories: [
-      new Category('No Defects Found', 'rgb(0, 153, 0)'),
-      new Category('Quality', 'rgb(255, 255, 0)'),
-      new Category('Conditional', 'rgb(255, 128, 0)'),
-      new Category('Serious Conditional', 'rgb(255, 0, 0)')
-    ],
-    numItems: 0,
-    zoneKey: null,
-    productKey: null,
-    charts: null
-  }
-
   // El constructor de este componente, inyectando los servicios requeridos
   constructor(
     toastManager: ToastService,
@@ -118,8 +35,16 @@ export class ScoresGraphComponent extends GraphComponent implements OnInit
     )
   }
 
-  // Esta funcion se ejecuta al iniciar la pagina
-  ngOnInit(): void {
+  // Esta funcion se invocara cuando el componente sea iniciado
+  onComponentInit(): void {
+    this.chartsConfig.dateKey = 'TSDone'
+    this.chartsConfig.categories = [
+      new Category('No Defects Found', 'rgb(0, 153, 0)'),
+      new Category('Quality', 'rgb(255, 255, 0)'),
+      new Category('Conditional', 'rgb(255, 128, 0)'),
+      new Category('Serious Conditional', 'rgb(255, 0, 0)')
+    ]
+
     // inicializamos variables que contendran los encabezados para el producto 
     // y la zona, dependiendo del tipo de archivo subido por el usuario
     switch (this.file.type) {
@@ -169,109 +94,6 @@ export class ScoresGraphComponent extends GraphComponent implements OnInit
         ]
       break
     }
-
-    this.onFileReadCallback = (results, file) => {
-      // almacenamiento temporal para zonas y productos revisados
-      let checkedZones: Array<string> = []
-      let zones: Array<Zone> = []
-      let products: Array<string> = []
-
-      // visitamos cada renglon del archivo
-      for (let row of this.file.info.data) {
-        let zone = row[this.chartsConfig.zoneKey].toUpperCase()
-        let product = row[this.chartsConfig.productKey].toUpperCase()
-        let idx = checkedZones.indexOf(zone)
-
-        if (idx > -1) {
-          let p = zones[idx].products.indexOf(product)
-          if (p == -1) {
-            zones[idx].products.push(product)
-          }
-        } else {
-          checkedZones.push(zone)
-          zones.push({ 
-            name: zone,
-            products: [ product ]
-          })
-        }
-
-        // revisamos si el producto se encuentra en la lista de productos
-        idx = products.indexOf(product)
-        
-        // si no se encuentra, lo agregamos
-        if (idx == -1) {
-          products.push(product)
-        }
-
-        // obtenemos la fecha de este registro
-        let date = 
-          Date.parse(row['TSDone'].replace(/\s/g, ''))
-        
-        // si la fecha es mas chica que el limite inferior, la almacenamos 
-        // como el nuevo limite inferior
-        if (date < this.minDate) {
-          this.minDate = date
-        }
-
-        // si la fecha es mas grande que el limite superior, la almacenamos
-        // como el nuevo limite superior
-        if (date > this.maxDate) {
-          this.maxDate = date
-        }
-      }
-
-      // guardamos los limites inferior y superior para la seleccion de fecha
-      let tempMinDate = null
-      this.langManager.translations.es.global.datePickerConfig['min'] = 
-      this.langManager.translations.en.global.datePickerConfig['min'] =
-      tempMinDate =
-        new Date(this.minDate)
-      
-      let tempMaxDate = null
-      this.langManager.translations.es.global.datePickerConfig['max'] = 
-      this.langManager.translations.en.global.datePickerConfig['max'] =
-      tempMaxDate =
-        new Date(this.maxDate)
-      
-      let startDateMonth = tempMinDate.getMonth() + 1
-      let startDateDay = tempMinDate.getUTCDate()
-      let startDate = 
-        `${ tempMinDate.getFullYear() }-` +
-        `${ (startDateMonth < 10) ? '0' + startDateMonth : startDateMonth }-` +
-        `${ (startDateDay < 10) ? '0' + startDateDay : startDateDay }`
-      
-      let endDateMonth = tempMaxDate.getMonth() + 1
-      let endDateDay = tempMaxDate.getUTCDate()
-      let endDate = 
-        `${ tempMaxDate.getFullYear() }-` +
-        `${ (endDateMonth < 10) ? '0' + endDateMonth : endDateMonth }-` +
-        `${ (endDateDay < 10) ? '0' + endDateDay : endDateDay }`
-
-      this.startDate = startDate
-      this.endDate = endDate
-
-      // ordenamos la lista temporal de zonas y productos
-      zones.sort(function(a, b) {
-        if (a.name < b.name) {
-          return -1
-        } else if (a.name > b.name) {
-          return 1
-        } else {
-          return 0
-        }
-      })
-      products.sort()
-
-      // agregamos la lista temporal a la lista final de zonas y productos
-      this.zones = this.zones.concat(zones)
-      this.zones[0].products = this.zones[0].products.concat(products)
-
-      for (let zone of this.zones) {
-        zone.products.sort()
-      }
-    } // this.onFileReadCallback = (results, file) => void
-
-    this.readFile()
   }
 
   // Calcula el acumulado de productos para cada categoria registrada en el 
@@ -441,8 +263,7 @@ export class ScoresGraphComponent extends GraphComponent implements OnInit
       layout: {
         width: 600,
         height: 360,
-        title: 'Pending',
-        // paper_bgcolor: '#d0d0d0'
+        title: 'Pending'
       },
       options: {}
     }
@@ -469,20 +290,6 @@ export class ScoresGraphComponent extends GraphComponent implements OnInit
   // Esta funcion crea un archivo de imagen por cada grafica generada por el 
   // usuario 
   createChartBitmaps(): void {
-    /*let startDateMonth = this.startDate.getMonth() + 1
-    let startDateDay = this.startDate.getUTCDate()
-    let startDate = 
-      `${ this.startDate.getFullYear() }-` +
-      `${ (startDateMonth < 10) ? '0' + startDateMonth : startDateMonth }-` +
-      `${ (startDateDay < 10) ? '0' + startDateDay : startDateDay }`
-
-    let endDateMonth = this.endDate.getMonth() + 1
-    let endDateDay = this.endDate.getUTCDate()
-    let endDate = 
-      `${ this.endDate.getFullYear() }-` +
-      `${ (endDateMonth < 10) ? '0' + endDateMonth : endDateMonth }-` +
-      `${ (endDateDay < 10) ? '0' + endDateDay : endDateDay }`*/
-
     // numero de graficas desplegadas 
     let numCharts = 4
 
@@ -560,7 +367,7 @@ export class ScoresGraphComponent extends GraphComponent implements OnInit
   } // createChartBitmaps(): void
 
   // Esta funcion se invoca cuando el usuario hace clic en el boton de graficar
-  onGraphButtonClicked(): void {
+  initChart(): void {
     // reinicializamos los datos 
     this.chartsConfig.numItems = 0
     for (let c of this.chartsConfig.categories) {
@@ -584,8 +391,5 @@ export class ScoresGraphComponent extends GraphComponent implements OnInit
 
     // calculamos los porcentajes a desplegar
     this.computePercentage()
-
-    // desplegamos las graficas finalmente
-    this.displayChart()
-  } // onGraphButtonClicked(): void
+  } 
 } // export class GraphComponent implements OnInit
