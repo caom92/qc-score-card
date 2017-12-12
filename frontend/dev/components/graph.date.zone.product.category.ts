@@ -9,42 +9,6 @@ import { MzModalService } from 'ng2-materialize'
 import { ProgressModalComponent } from './modal.please.wait'
 import { GraphComponent } from './graph.default'
 
-// Clase auxiliar que define los atributos necesarios para generar las graficas 
-// leidos cada columna del archivo
-export class ColumnKey 
-{
-  // El numero de unidades de producto que fueron registrados en esa columna
-  numItems: number = 0
-
-  // El porcentaje de cajas totales que fueron registrados en esa columna
-  percentage: number = 0
-
-  // El nombre de la columna
-  name: string = null
-
-  // Constructor
-  constructor(name: string) {
-    this.name = name
-  }
-}
-
-// Clase auxiliar que define los atributos necesarios para generar las graficas
-// leidos de cada categoria de columnas
-export class Category extends ColumnKey
-{
-  // El color que representa esta categoria
-  color: string = null
-
-  // Los nombres de las columnas que pertenecen a esta categoria
-  keys: Array<ColumnKey> = []
-
-  // Constructor
-  constructor(name: string, color: string) {
-    super(name)
-    this.color = color
-  }
-}
-
 // Clase auxiliar que define los atributos asociados con una zona 
 export class Zone
 {
@@ -95,19 +59,17 @@ export abstract class DateZoneProductCategoryGraphComponent
   // Opciones de configuracion que determinan como desplegar las graficas en la 
   // pantalla
   chartsConfig: {
-    numItems: number,
     zoneKey: string,
     productKey: string,
     dateKey: string,
-    categories: Array<Category>
-    charts: Array<any>
+    charts: Array<any>,
+    data: any
   } = {
-    numItems: 0,
     zoneKey: null,
     productKey: null,
     dateKey: null,
-    categories: null,
-    charts: null
+    charts: null,
+    data: null
   }
 
   // El constructor de este componente, inyectando los servicios requeridos
@@ -279,6 +241,9 @@ export abstract class DateZoneProductCategoryGraphComponent
     // creamos las imagenes que seran enviadas al servidor para generar el 
     // reporte PDF
     this.createChartBitmaps()
+
+    // desplegamos el boton para generar el reporte PDF
+    this.showReportButton = true
   } // onGraphButtonClicked(): void
 
   // Esta funcion se invoca cuando el usuario elije una zona

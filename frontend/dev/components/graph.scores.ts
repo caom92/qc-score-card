@@ -7,7 +7,43 @@ import { FileType } from './app.upload'
 import { PapaParseService } from 'ngx-papaparse'
 import { MzModalService } from 'ng2-materialize'
 import { ProgressModalComponent } from './modal.please.wait'
-import { DateZoneProductCategoryGraphComponent, Category, ColumnKey } from './graph.date.zone.product.category'
+import { DateZoneProductCategoryGraphComponent } from './graph.date.zone.product.category'
+
+// Clase auxiliar que define los atributos necesarios para generar las graficas 
+// leidos cada columna del archivo
+export class ColumnKey 
+{
+  // El numero de unidades de producto que fueron registrados en esa columna
+  numItems: number = 0
+
+  // El porcentaje de cajas totales que fueron registrados en esa columna
+  percentage: number = 0
+
+  // El nombre de la columna
+  name: string = null
+
+  // Constructor
+  constructor(name: string) {
+    this.name = name
+  }
+}
+
+// Clase auxiliar que define los atributos necesarios para generar las graficas
+// leidos de cada categoria de columnas
+export class Category extends ColumnKey
+{
+  // El color que representa esta categoria
+  color: string = null
+
+  // Los nombres de las columnas que pertenecen a esta categoria
+  keys: Array<ColumnKey> = []
+
+  // Constructor
+  constructor(name: string, color: string) {
+    super(name)
+    this.color = color
+  }
+}
 
 // Este componente describe el comportamiento de la pantalla donde se 
 // graficaran los datos del archivo
@@ -37,8 +73,13 @@ export class ScoresGraphComponent extends DateZoneProductCategoryGraphComponent
 
   // Esta funcion se invocara cuando el componente sea iniciado
   onComponentInit(): void {
+    this.reportForm.orientation = 'L'
+    this.chartsConfig.data = {
+      numItems: 0,
+      categories: new Array<Category>()
+    }
     this.chartsConfig.dateKey = 'TSDone'
-    this.chartsConfig.categories = [
+    this.chartsConfig.data.categories = [
       new Category('No Defects Found', 'rgb(0, 153, 0)'),
       new Category('Quality', 'rgb(255, 255, 0)'),
       new Category('Conditional', 'rgb(255, 128, 0)'),
@@ -51,19 +92,19 @@ export class ScoresGraphComponent extends DateZoneProductCategoryGraphComponent
       case FileType.Vegetables:
         this.chartsConfig.productKey = 'ItemCode'
         this.chartsConfig.zoneKey = 'Project'
-        this.chartsConfig.categories[1].keys = [
+        this.chartsConfig.data.categories[1].keys = [
           new ColumnKey('Undersized'),
           new ColumnKey('Oversized'),
           new ColumnKey('InsectDamage'),
           new ColumnKey('Scarring')
         ]
-        this.chartsConfig.categories[2].keys = [
+        this.chartsConfig.data.categories[2].keys = [
           new ColumnKey('Discoloration'),
           new ColumnKey('InsectPresenceFrass'),
           new ColumnKey('Softness'),
           new ColumnKey('Bruising')
         ]
-        this.chartsConfig.categories[3].keys = [
+        this.chartsConfig.data.categories[3].keys = [
           new ColumnKey('Decay'),
           new ColumnKey('DehydrationShrivel'),
           new ColumnKey('AbnormalSoftness'),
@@ -74,18 +115,18 @@ export class ScoresGraphComponent extends DateZoneProductCategoryGraphComponent
       case FileType.Basil:
         this.chartsConfig.productKey = 'ItemCode'
         this.chartsConfig.zoneKey = 'CardCode'
-        this.chartsConfig.categories[1].keys = [
+        this.chartsConfig.data.categories[1].keys = [
           new ColumnKey('Undersized%'),
           new ColumnKey('Oversized%'),
           new ColumnKey('InsectDamage%'),
         	new ColumnKey('Flowers%')
         ]
-        this.chartsConfig.categories[2].keys = [
+        this.chartsConfig.data.categories[2].keys = [
           new ColumnKey('Discoloration%'),
           new ColumnKey('SevereInsectFrass%'),
           new ColumnKey('MechanicalDamage%')
         ]
-        this.chartsConfig.categories[3].keys = [
+        this.chartsConfig.data.categories[3].keys = [
           new ColumnKey('Dehydration%'),
           new ColumnKey('Decay%'),
           new ColumnKey('Yellowing%'),
@@ -107,7 +148,7 @@ export class ScoresGraphComponent extends DateZoneProductCategoryGraphComponent
     for (let row of this.file.info.data) {
       // revisamos que los datos registrados en este renglon esten dentro del 
       // intervalo de fecha elegido por el usuario
-      let date = Date.parse(row['TSDone'].replace(/\s/g, ''))
+      let date = Date.parse(row[this.chartsConfig.dateKey].replace(/\s/g, ''))
       if (date < minDate || date > maxDate) {
         continue
       }
@@ -139,12 +180,13 @@ export class ScoresGraphComponent extends DateZoneProductCategoryGraphComponent
       // de las centecimas, estos numeros no son transformados automaticamente 
       // en tipo number, sino que permanecen como string, debemos considerar 
       // esto al leer las cantidades 
-      this.chartsConfig.numItems += (typeof row['Itemcount'] === 'number') ?
-        row['Itemcount']
-        : parseFloat(row['Itemcount'].replace(/\,/g, ''))
+      this.chartsConfig.data.numItems += 
+        (typeof row['Itemcount'] === 'number') ?
+          row['Itemcount']
+          : parseFloat(row['Itemcount'].replace(/\,/g, ''))
 
       // visitamos cada categoria
-      for (let c of this.chartsConfig.categories) {
+      for (let c of this.chartsConfig.data.categories) {
         // visitamos cada columna que esta asociada a esta categoria
         for (let k of c.keys) {
           // acumulamos el valor de esta columna, cuidando aquellos numeros 
@@ -153,7 +195,7 @@ export class ScoresGraphComponent extends DateZoneProductCategoryGraphComponent
             row[k.name]: parseFloat(row[k.name].replace(/\,/g, '')) 
           k.numItems += numItems
           c.numItems += numItems
-        } // for (let j of this.chartsConfig.categories[i])
+        } // for (let j of this.chartsConfig.data.categories[i])
       } // for (let i of categories)
     } // for (let row of this.file.info.data)
   } // computeTally(): any
@@ -162,14 +204,14 @@ export class ScoresGraphComponent extends DateZoneProductCategoryGraphComponent
   // las graficas 
   computePercentage(): void {
     // preparamos el porcentaje de los productos que no tuvieron defectos
-    this.chartsConfig.categories[0].percentage = 100
+    this.chartsConfig.data.categories[0].percentage = 100
 
     // calculamos el divisor para calcular el porcentaje
-    let totalNumItems = 100 / this.chartsConfig.numItems
+    let totalNumItems = 100 / this.chartsConfig.data.numItems
 
     // visitamos cada categoria que no sea aquella donde no se encontraron 
     // defectos
-    for (let c of this.chartsConfig.categories) {
+    for (let c of this.chartsConfig.data.categories) {
       if (c.name != 'No Defects Found') {
         // calculamos el divisor para calcular el porcentaje
         let categoryNumItems = 100 / c.numItems
@@ -185,9 +227,9 @@ export class ScoresGraphComponent extends DateZoneProductCategoryGraphComponent
 
         // actualizamos el porcentaje correspondiente a la categoria sin 
         // defectos
-        this.chartsConfig.categories[0].percentage -= c.percentage
+        this.chartsConfig.data.categories[0].percentage -= c.percentage
       } // if (c.name != 'No Defects Found')
-    } // for (let c of this.chartsConfig.categories)
+    } // for (let c of this.chartsConfig.data.categories)
   } // computePercentage(): void
 
   // Crea las graficas en pantalla
@@ -197,16 +239,16 @@ export class ScoresGraphComponent extends DateZoneProductCategoryGraphComponent
     
     // preparamos los datos de configuracion de la grafica de pastel
     let pieTrace = {
-      values: [ this.chartsConfig.categories[0].percentage ],
-      labels: [ this.chartsConfig.categories[0].name ],
+      values: [ this.chartsConfig.data.categories[0].percentage ],
+      labels: [ this.chartsConfig.data.categories[0].name ],
       marker: { 
-        colors: [ this.chartsConfig.categories[0].color ] 
+        colors: [ this.chartsConfig.data.categories[0].color ] 
       },
       type: 'pie'
     }
 
     // visitamos cada categoria
-    for (let c of this.chartsConfig.categories) {
+    for (let c of this.chartsConfig.data.categories) {
       // llenamos el porcentaje de la categoria en la grafica de pastel
       pieTrace.values.push(c.percentage)
       pieTrace.labels.push(c.name)
@@ -220,7 +262,7 @@ export class ScoresGraphComponent extends DateZoneProductCategoryGraphComponent
           y: [],
           text: [],
           textposition: 'auto',
-          hoverinfo: 'none',
+          // hoverinfo: 'none',
           marker: {
             color: c.color
           },
@@ -255,7 +297,7 @@ export class ScoresGraphComponent extends DateZoneProductCategoryGraphComponent
           options: {}  
         })
       } // if (c.name != 'No Defects Found')
-    } // for (let c of this.chartsConfig.categories)
+    } // for (let c of this.chartsConfig.data.categories)
 
     // obtenemos los datos de configuracion de la grafica de pastel
     let pieChart = {
@@ -290,9 +332,6 @@ export class ScoresGraphComponent extends DateZoneProductCategoryGraphComponent
   // Esta funcion crea un archivo de imagen por cada grafica generada por el 
   // usuario 
   createChartBitmaps(): void {
-    // numero de graficas desplegadas 
-    let numCharts = 4
-
     // datos que seran enviados al servidor para crear el reporte PDF
     let reportData = {
       header: `
@@ -334,6 +373,7 @@ export class ScoresGraphComponent extends DateZoneProductCategoryGraphComponent
     }
 
     // visitamos cada grafica generada
+    let numCharts = 4
     for (let i = 0; i < numCharts; ++i) {
       // obtenemos el objeto DOM donde se almacena la grafica
       let chartDiv = document.getElementById(`chart${ i }`)
@@ -369,8 +409,8 @@ export class ScoresGraphComponent extends DateZoneProductCategoryGraphComponent
   // Esta funcion se invoca cuando el usuario hace clic en el boton de graficar
   initChart(): void {
     // reinicializamos los datos 
-    this.chartsConfig.numItems = 0
-    for (let c of this.chartsConfig.categories) {
+    this.chartsConfig.data.numItems = 0
+    for (let c of this.chartsConfig.data.categories) {
       c.numItems = c.percentage = 0
       for (let k of c.keys) {
         k.numItems = k.percentage = 0
@@ -382,7 +422,7 @@ export class ScoresGraphComponent extends DateZoneProductCategoryGraphComponent
 
     // si no hubo ningun producto registrado con los parametros ingresados por 
     // el usuario, hay que notificarle
-    if (this.chartsConfig.numItems == 0) {
+    if (this.chartsConfig.data.numItems == 0) {
       this.toastManager.showText(
         this.langManager.messages.graph.noResults
       )

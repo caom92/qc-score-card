@@ -7,7 +7,7 @@ import { DynamicComponentResolver } from './dynamic.resolver'
 import { ScoresGraphComponent } from './graph.scores'
 import { ComplaintsGraphComponent } from './graph.complaints'
 import { environment } from '../environments/environment'
-import { GraphComponent } from './graph'
+import { GraphComponent } from './graph.default'
 
 // El tipo de documento que el usuario puede subir
 export enum FileType {

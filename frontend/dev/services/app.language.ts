@@ -62,7 +62,7 @@ export class LanguageService
         zone: 'Zona',
         product: 'Producto',
         graphButton: 'Graficar',
-        noResults: 'La zona elegida no tiene registrado el producto elegido'
+        noResults: 'No se encontraron resultados con los parámetros de búsqueda ingresados'
       },
       100: 'No se pudo reconocer el servicio solicitado',
       101: 'Faltó enviar una entrada al servidor',
@@ -117,7 +117,7 @@ export class LanguageService
         zone: 'Zone',
         product: 'Product',
         graphButton: 'Graph',
-        noResults: 'The selected product is not registered in the selected zone'
+        noResults: 'No results where found with the given search parameters'
       },
       100: 'Unable to recognize the requested service',
       101: 'A server input argument was not send',

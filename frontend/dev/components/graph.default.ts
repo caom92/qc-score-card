@@ -67,7 +67,7 @@ export abstract class GraphComponent
     company: 'Agroproductos Del Cabo S. A. de C. V.',
     address: 'Carretera Transpeninsular km 125.5 Maneadero Parte Alta',
     logo: 'default.png',
-    orientation: 'L',
+    orientation: 'P',
     footer: '',
     supervisor: '',
     signature: ''
