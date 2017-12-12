@@ -173,7 +173,12 @@ export abstract class DateZoneProductCategoryGraphComponent
       this.zones[0].products = this.zones[0].products.concat(products)
 
       for (let zone of this.zones) {
-        zone.products.sort()
+        let products = zone.products.splice(0)
+        products.sort()
+        zone.products = [
+          'ALL - TODOS'
+        ]
+        zone.products = zone.products.concat(products)
       }
     } // this.onFileReadCallback = (results, file) => void
 

@@ -39,7 +39,8 @@ export abstract class GraphComponent
     content: JSON.stringify([{
       header: '',
       body: '',
-      footer: ''
+      footer: '',
+      orientation: 'P'
     }]),
     style: `
       <style>
