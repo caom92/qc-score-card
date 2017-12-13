@@ -166,20 +166,20 @@ export abstract class DateZoneProductCategoryGraphComponent
           return 0
         }
       })
-      products.sort()
 
       // agregamos la lista temporal a la lista final de zonas y productos
-      this.zones = this.zones.concat(zones)
-      this.zones[0].products = this.zones[0].products.concat(products)
-
-      for (let zone of this.zones) {
-        let products = zone.products.splice(0)
-        products.sort()
+      for (let zone of zones) {
+        let zoneProducts = zone.products.splice(0)
+        zoneProducts.sort()
         zone.products = [
           'ALL - TODOS'
         ]
-        zone.products = zone.products.concat(products)
+        zone.products = zone.products.concat(zoneProducts)
       }
+
+      products.sort()
+      this.zones = this.zones.concat(zones)
+      this.zones[0].products = this.zones[0].products.concat(products)
     } // this.onFileReadCallback = (results, file) => void
 
     // leemos el archivo
